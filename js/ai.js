@@ -24,6 +24,89 @@ AI.prototype.eval = function() {
 
 AI.prototype.random = function(){}
 
+//
+// Expectiminimax algorithm
+//
+AI.prototype.expectiminimax = function (depth) {
+  if (this.grid.playerTurn) {
+    // It's the AI's turn to play (max)
+    if (depth == 0) {
+      // Don't go any deeper, just run the heuristic
+      return {
+        score: HEURISTIC_FUNCTION(this.grid);
+      }
+    } else {
+      var score = 0;
+      var move = -1;
+      // Loop through the allowed moves (up, down, left right)
+      for (var direction in [0, 1, 2, 3]) {
+        // Clone the grid and make the move on it
+        var newGrid = this.grid.clone();
+        this.grid.playerTurn = false;
+        if (newGrid.move(direction).moved) {
+          // Move was successful
+          // Check if the value of this new board is greater than the cached
+          // value stored in score
+
+          // Check the value of the board by makinga new AI with that board and
+          // then running the expectiminimax algo on it
+          var newAI = new AI(newGrid);
+          var newScore = newAI.expectiminimax(depth - 1).score;
+
+          // If the new score is greater than the previous one, update the
+          // score and direction required to get that score
+          if (newScore > score) {
+            score = newScore;
+            move = direction;
+          }
+        }
+      }
+
+      return {
+        score: score,
+        move: dir
+      }
+    }
+  } else {
+    // It's the computer's turn, i.e. the random addition of a 2 tile or 4 tile
+    // This is the min player
+    var score = 0;
+
+    // Get the available (empty) cells in the grid
+    var cells = this.grid.availableCells();
+
+    // Tile to be inserted could be a 2 or a 4
+    for (var value in [2, 4]) {
+
+      // Loop through the empty cells
+      for (var i in cells) {
+
+        // Create and insert a new tile with the given number
+        var cell = cells[i];
+        var tile = new Tile(cell, value);
+        this.grid.insertTile(tile);
+
+        // Calculate the value of this board
+        var newScore = this.expectiminimax(depth).score;
+
+        // The value to add to the total score is the probability that the value
+        // is chosen (prob of 2 or prob of 4) multiplied by the probability that
+        // that cell is chosen (each cell has equal probability) times the score
+        // of the new board
+        score += probabilityOfNewTile(value) * newScore * (1 / cells.length);
+
+        // Remove the cell so that everything is back to how it started
+        this.grid.removeTile(cell);
+      }
+    }
+    this.grid.playerTurn = true;
+    // Not sure if the return value is correct
+    return {
+      score: score
+    }
+  }
+}
+
 // alpha-beta depth first search
 AI.prototype.search = function(depth, alpha, beta, positions, cutoffs) {
   var bestScore;

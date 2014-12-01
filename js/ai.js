@@ -29,11 +29,12 @@ AI.prototype.random = function(){}
 //
 AI.prototype.expectiminimax = function (depth) {
   if (this.grid.playerTurn) {
+    this.grid.playerTurn = false;
     // It's the AI's turn to play (max)
     if (depth == 0) {
       // Don't go any deeper, just run the heuristic
       return {
-        score: HEURISTIC_FUNCTION(this.grid);
+        score: HEURISTIC_FUNCTION(this.grid)
       }
     } else {
       var score = 0;
@@ -68,6 +69,7 @@ AI.prototype.expectiminimax = function (depth) {
       }
     }
   } else {
+    this.grid.playerTurn = true;
     // It's the computer's turn, i.e. the random addition of a 2 tile or 4 tile
     // This is the min player
     var score = 0;
@@ -99,7 +101,6 @@ AI.prototype.expectiminimax = function (depth) {
         this.grid.removeTile(cell);
       }
     }
-    this.grid.playerTurn = true;
     // Not sure if the return value is correct
     return {
       score: score

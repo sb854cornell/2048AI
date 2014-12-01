@@ -162,7 +162,7 @@ AI.prototype.search = function(depth, alpha, beta, positions, cutoffs) {
         var cell = cells[i];
         var tile = new Tile(cell, parseInt(value, 10));
         this.grid.insertTile(tile);
-        scores[value][i] = -this.grid.smoothness() + this.grid.islands();
+        scores[value][i] = -this.eval();
         this.grid.removeTile(cell);
       }
     }

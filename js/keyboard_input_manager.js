@@ -67,24 +67,6 @@ KeyboardInputManager.prototype.listen = function () {
     e.preventDefault();
     self.emit('run')
   })
-
-
-  // Listen to swipe events
-  var gestures = [Hammer.DIRECTION_UP, Hammer.DIRECTION_RIGHT,
-                  Hammer.DIRECTION_DOWN, Hammer.DIRECTION_LEFT];
-
-  var gameContainer = document.getElementsByClassName("game-container")[0];
-  var handler       = Hammer(gameContainer, {
-    drag_block_horizontal: true,
-    drag_block_vertical: true
-  });
-  
-  handler.on("swipe", function (event) {
-    event.gesture.preventDefault();
-    mapped = gestures.indexOf(event.gesture.direction);
-
-    if (mapped !== -1) self.emit("move", mapped);
-  });
 };
 
 KeyboardInputManager.prototype.restart = function (event) {

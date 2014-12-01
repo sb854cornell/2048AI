@@ -29,6 +29,8 @@ AI.prototype.random = function(){}
 //
 AI.prototype.expectiminimax = function (depth) {
   if (this.grid.playerTurn) {
+    this.grid.playerTurn = false;
+
     // It's the AI's turn to play (max)
     if (depth == 0) {
       // Don't go any deeper, just run the heuristic
@@ -42,7 +44,6 @@ AI.prototype.expectiminimax = function (depth) {
       for (var direction in [0, 1, 2, 3]) {
         // Clone the grid and make the move on it
         var newGrid = this.grid.clone();
-        this.grid.playerTurn = false;
         if (newGrid.move(direction).moved) {
           // Move was successful
           // Check if the value of this new board is greater than the cached
@@ -68,6 +69,8 @@ AI.prototype.expectiminimax = function (depth) {
       }
     }
   } else {
+    this.grid.playerTurn = true;
+
     // It's the computer's turn, i.e. the random addition of a 2 tile or 4 tile
     // This is the min player
     var score = 0;
@@ -99,7 +102,6 @@ AI.prototype.expectiminimax = function (depth) {
         this.grid.removeTile(cell);
       }
     }
-    this.grid.playerTurn = true;
     // Not sure if the return value is correct
     return {
       score: score

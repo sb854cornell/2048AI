@@ -35,7 +35,7 @@ AI.prototype.expectiminimax = function (depth) {
     if (depth == 0) {
       // Don't go any deeper, just run the heuristic
       return {
-        score: HEURISTIC_FUNCTION(this.grid)
+        score: this.eval()
       }
     } else {
       var score = 0;

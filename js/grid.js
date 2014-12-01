@@ -324,8 +324,8 @@ Grid.prototype.maxAndSum = function() {
   var retArray = []
   for (var x=0; x<4; x++) {
     for (var y=0; y<4; y++) {
-      if (this.cellOccupied(this.indexes[x][y])) {
-        var value = this.cellContent(this.indexes[x][y]).value;
+      if (this.cellOccupied(this.cells[x][y])) {
+        var value = this.cellContent(this.cells[x][y]).value;
         if (value > max) {
           max = value;
         }
@@ -348,25 +348,25 @@ Grid.prototype.boardSimilarityScore = function () {
   var sim = 0
   for (var x=0; x<4; x++){
     for (var y=0; y<4; y++){
-      if (this.cellOccupied(this.indexes[x][y])) {
+      if (this.cellOccupied(this.cells[x][y])) {
         var blockSim = 0;
-        var currBlockVal = this.cellContent(this.indexes[x][y]).value;
+        var currBlockVal = this.cellContent(this.cells[x][y]).value;
         // check if any of the 4 blocks availabe in one move
         // are the same as this block
         if (this.withinBounds({x:x-1, y:y}) &&
-            currBlockVal == this.cellContent(this.indexes[x-1][y])) {
+            currBlockVal == this.cellContent(this.cells[x-1][y])) {
           blockSim += 1;
         }
         if (this.withinBounds({x:x-1, y:y-1}) &&
-            currBlockVal == this.cellContent(this.indexes[x-1][y-1])) {
+            currBlockVal == this.cellContent(this.cells[x-1][y-1])) {
           blockSim += 1;
         }
         if (this.withinBounds({x:x+1, y:y}) &&
-            currBlockVal == this.cellContent(this.indexes[x+1][y])) {
+            currBlockVal == this.cellContent(this.cells[x+1][y])) {
           blockSim += 1;
         }
         if (this.withinBounds({x:x+1, y:y+1}) &&
-            currBlockVal == this.cellContent(this.indexes[x+1][y+1])) {
+            currBlockVal == this.cellContent(this.cells[x+1][y+1])) {
           blockSim += 1;
         }
         // weight the block similarity by the log base 2 value of
@@ -388,9 +388,9 @@ Grid.prototype.monotoneBoardScore = function () {
   var trendSum = 0;
   for (var x=0; x<4; x++){
     var currentTrend = 0;
-    var lastVal = this.cellContent(this.indexes[x][0]).value
+    var lastVal = this.cellContent(this.cells[x][0]).value;
     for (var y=1; y<4; y++){
-      thisVal = this.cellContent(this.indexes[x][y]).value;
+      thisVal = this.cellContent(this.cells[x][y]).value;
       if (lastVal > thisVal && currentTrend <= 0) {
         currentTrend = -1;
       }
@@ -436,8 +436,8 @@ Grid.prototype.monotoneBoardScore = function () {
 Grid.prototype.isWin = function() {
   for (var x=0; x<4; x++) {
     for (var y=0; y<4; y++) {
-      if (this.cellOccupied(this.indexes[x][y])) {
-        if (this.cellContent(this.indexes[x][y]).value == 2048) {
+      if (this.cellOccupied(this.cells[x][y])) {
+        if (this.cellContent(this.cells[x][y]).value == 2048) {
           return true;
         }
       }

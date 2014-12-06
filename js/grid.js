@@ -182,7 +182,7 @@ Grid.prototype.move = function (direction) {
 
       if (tile) {
         //if (debug) {
-          //console.log('tile @', x, y);
+          console.log('tile @', x, y);
         //}
         var positions = self.findFarthestPosition(cell, vector);
         var next      = self.cellContent(positions.next);

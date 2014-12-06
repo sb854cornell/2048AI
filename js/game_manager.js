@@ -66,10 +66,8 @@ GameManager.prototype.move = function(direction) {
   var result = this.grid.move(direction);
   this.score += result.score;
 
-  if (!result.won) {
-    if (result.moved) {
+  if (result.moved) {
       this.grid.computerMove();
-    }
   } else {
     this.won = true;
   }
@@ -88,7 +86,7 @@ GameManager.prototype.run = function() {
   var best = this.ai.getBest();
   this.move(best.move);
   var timeout = animationDelay;
-  if (this.running && !this.over && !this.won) {
+  if (this.running && !this.over) {
     var self = this;
     setTimeout(function(){
       self.run();

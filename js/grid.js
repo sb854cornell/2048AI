@@ -8,6 +8,10 @@ function Grid(size) {
   this.playerTurn = true;
 }
 
+Grid.prototype.probabilityOfNewTile = function (value) {
+  return (value == 2) ? 0.9 : 0.1;
+}
+
 // pre-allocate these objects (for speed)
 Grid.prototype.indexes = [];
 for (var x=0; x<4; x++) {
@@ -175,6 +179,7 @@ Grid.prototype.move = function (direction) {
   // Traverse the grid in the right direction and move tiles
   traversals.x.forEach(function (x) {
     traversals.y.forEach(function (y) {
+      //console.log(self.indexes);
       cell = self.indexes[x][y];
       tile = self.cellContent(cell);
 
@@ -381,6 +386,14 @@ Grid.prototype.boardSimilarityScore = function () {
   return sim;
 }
 
+Grid.prototype.safeCellContent = function (cell) {
+  var result = this.cellContent(cell)
+  if (result == null) {
+    return 0;
+  }
+  return result.value;
+}
+
 // calculate how "monotonic" the board is -- it's best if the board
 // focuses large amount values in one region of the board and
 // small values in another region of the board. The board gets
@@ -390,9 +403,12 @@ Grid.prototype.monotoneBoardScore = function () {
   var trendSum = 0;
   for (var x=0; x<4; x++){
     var currentTrend = 0;
-    var lastVal = this.cellContent(this.indexes[x][0]).value
+    //console.log(this.indexes[x][0])
+    //console.log(this.safeCellContent(this.indexes[x][0]))
+    var lastVal = this.safeCellContent(this.indexes[x][0]);
+    var thisVal;
     for (var y=1; y<4; y++){
-      thisVal = this.cellContent(this.indexes[x][y]).value;
+      thisVal = this.safeCellContent(this.indexes[x][y]);
       if (lastVal > thisVal && currentTrend <= 0) {
         currentTrend = -1;
       }

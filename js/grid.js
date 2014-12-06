@@ -6,6 +6,8 @@ function Grid(size) {
 
   this.build();
   this.playerTurn = true;
+  
+  this.indexes = []
 }
 
 // pre-allocate these objects (for speed)
@@ -321,11 +323,13 @@ Grid.prototype.toString = function() {
 Grid.prototype.maxAndSum = function() {
   var max = 0;
   var sum = 0;
+  var cells = this.availableCells()
+  console.log(cells)
   var retArray = []
   for (var x=0; x<4; x++) {
     for (var y=0; y<4; y++) {
-      if (this.cellOccupied(this.cells[x][y])) {
-        var value = this.cellContent(this.cells[x][y]).value;
+      if (this.cellOccupied(cells[x][y])) {
+        var value = this.cellContent(cells[x][y]).value;
         if (value > max) {
           max = value;
         }
@@ -388,9 +392,9 @@ Grid.prototype.monotoneBoardScore = function () {
   var trendSum = 0;
   for (var x=0; x<4; x++){
     var currentTrend = 0;
-    var lastVal = this.cellContent(this.cells[x][0]).value;
+    var lastVal = this.cellContent(this.indexes[x][0]).value;
     for (var y=1; y<4; y++){
-      thisVal = this.cellContent(this.cells[x][y]).value;
+      thisVal = this.cellContent(this.indexes[x][y]).value;
       if (lastVal > thisVal && currentTrend <= 0) {
         currentTrend = -1;
       }

@@ -34,7 +34,7 @@ AI.prototype.expectiminimax = function (depth) {
     if (depth == 0) {
       // Don't go any deeper, just run the heuristic
       return {
-        score: HEURISTIC_FUNCTION(this.grid)
+        score: this.eval()
       }
     } else {
       var score = 0;
@@ -260,7 +260,8 @@ AI.prototype.search = function(depth, alpha, beta, positions, cutoffs) {
 
 // performs a search and returns the best move
 AI.prototype.getBest = function() {
-  return this.iterativeDeep();
+  return this.expectiminimax(3);
+  //return this.iterativeDeep();
 }
 
 // performs iterative deepening over the alpha-beta search

@@ -95,7 +95,7 @@ AI.prototype.expectiminimax = function (depth) {
         // is chosen (prob of 2 or prob of 4) multiplied by the probability that
         // that cell is chosen (each cell has equal probability) times the score
         // of the new board
-        score += probabilityOfNewTile(value) * newScore * (1 / cells.length);
+        score += this.grid.probabilityOfNewTile(value) * newScore * (1 / cells.length);
 
         // Remove the cell so that everything is back to how it started
         this.grid.removeTile(cell);

@@ -8,6 +8,10 @@ function Grid(size) {
   this.playerTurn = true;
 }
 
+Grid.prototype.probabilityOfNewTile = function (value) {
+  return (value == 2) ? 0.9 : 0.1;
+}
+
 // pre-allocate these objects (for speed)
 Grid.prototype.indexes = [];
 for (var x=0; x<4; x++) {

@@ -321,11 +321,13 @@ Grid.prototype.toString = function() {
 Grid.prototype.maxAndSum = function() {
   var max = 0;
   var sum = 0;
+  var cells = this.availableCells()
+  console.log(cells)
   var retArray = []
   for (var x=0; x<4; x++) {
     for (var y=0; y<4; y++) {
-      if (this.cellOccupied(this.indexes[x][y])) {
-        var value = this.cellContent(this.indexes[x][y]).value;
+      if (this.cellOccupied(cells[x][y])) {
+        var value = this.cellContent(cells[x][y]).value;
         if (value > max) {
           max = value;
         }

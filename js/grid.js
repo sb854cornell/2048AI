@@ -6,8 +6,6 @@ function Grid(size) {
 
   this.build();
   this.playerTurn = true;
-  
-  this.indexes = []
 }
 
 // pre-allocate these objects (for speed)
@@ -177,12 +175,13 @@ Grid.prototype.move = function (direction) {
   // Traverse the grid in the right direction and move tiles
   traversals.x.forEach(function (x) {
     traversals.y.forEach(function (y) {
+      //console.log(self.indexes);
       cell = self.indexes[x][y];
       tile = self.cellContent(cell);
 
       if (tile) {
         //if (debug) {
-          console.log('tile @', x, y);
+          //console.log('tile @', x, y);
         //}
         var positions = self.findFarthestPosition(cell, vector);
         var next      = self.cellContent(positions.next);
@@ -323,13 +322,11 @@ Grid.prototype.toString = function() {
 Grid.prototype.maxAndSum = function() {
   var max = 0;
   var sum = 0;
-  var cells = this.availableCells()
-  console.log(cells)
   var retArray = []
   for (var x=0; x<4; x++) {
     for (var y=0; y<4; y++) {
-      if (this.cellOccupied(cells[x][y])) {
-        var value = this.cellContent(cells[x][y]).value;
+      if (this.cellOccupied(this.indexes[x][y])) {
+        var value = this.cellContent(this.indexes[x][y]).value;
         if (value > max) {
           max = value;
         }
@@ -352,25 +349,25 @@ Grid.prototype.boardSimilarityScore = function () {
   var sim = 0
   for (var x=0; x<4; x++){
     for (var y=0; y<4; y++){
-      if (this.cellOccupied(this.cells[x][y])) {
+      if (this.cellOccupied(this.indexes[x][y])) {
         var blockSim = 0;
-        var currBlockVal = this.cellContent(this.cells[x][y]).value;
+        var currBlockVal = this.cellContent(this.indexes[x][y]).value;
         // check if any of the 4 blocks availabe in one move
         // are the same as this block
         if (this.withinBounds({x:x-1, y:y}) &&
-            currBlockVal == this.cellContent(this.cells[x-1][y])) {
+            currBlockVal == this.cellContent(this.indexes[x-1][y])) {
           blockSim += 1;
         }
         if (this.withinBounds({x:x-1, y:y-1}) &&
-            currBlockVal == this.cellContent(this.cells[x-1][y-1])) {
+            currBlockVal == this.cellContent(this.indexes[x-1][y-1])) {
           blockSim += 1;
         }
         if (this.withinBounds({x:x+1, y:y}) &&
-            currBlockVal == this.cellContent(this.cells[x+1][y])) {
+            currBlockVal == this.cellContent(this.indexes[x+1][y])) {
           blockSim += 1;
         }
         if (this.withinBounds({x:x+1, y:y+1}) &&
-            currBlockVal == this.cellContent(this.cells[x+1][y+1])) {
+            currBlockVal == this.cellContent(this.indexes[x+1][y+1])) {
           blockSim += 1;
         }
         // weight the block similarity by the log base 2 value of
@@ -383,6 +380,14 @@ Grid.prototype.boardSimilarityScore = function () {
   return sim;
 }
 
+Grid.prototype.safeCellContent = function (cell) {
+  var result = this.cellContent(cell)
+  if (result == null) {
+    return 0;
+  }
+  return result.value;
+}
+
 // calculate how "monotonic" the board is -- it's best if the board
 // focuses large amount values in one region of the board and
 // small values in another region of the board. The board gets
@@ -392,9 +397,12 @@ Grid.prototype.monotoneBoardScore = function () {
   var trendSum = 0;
   for (var x=0; x<4; x++){
     var currentTrend = 0;
-    var lastVal = this.cellContent(this.indexes[x][0]).value;
+    //console.log(this.indexes[x][0])
+    //console.log(this.safeCellContent(this.indexes[x][0]))
+    var lastVal = this.safeCellContent(this.indexes[x][0]);
+    var thisVal;
     for (var y=1; y<4; y++){
-      thisVal = this.cellContent(this.indexes[x][y]).value;
+      thisVal = this.safeCellContent(this.indexes[x][y]);
       if (lastVal > thisVal && currentTrend <= 0) {
         currentTrend = -1;
       }

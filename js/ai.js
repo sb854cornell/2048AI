@@ -118,6 +118,73 @@ AI.prototype.expectiminimax = function (depth) {
   }
 }
 
+
+/***************************** DEPTH LIMITED SEARCH ****************************
+
+Implements a recursive depth-limited depth first search. d is the depth limit
+Inv: d >= 0
+********************************************************************************/
+AI.prototype.dls = function(d) {
+  var bestScore;
+  var bestMove = -1;
+
+  if (this.grid.playerTurn) {
+    
+    //Base Case
+    if (d == 0) {return {score: this.eval()}}
+
+    //Recursive Case
+    else {
+      for (var direction in [0, 1, 2, 3]) {
+        var newGrid = this.grid.clone();
+        newGrid.playerTurn = false;
+        if (newGrid.move(direction).moved) { // Move was successful
+
+          // Check the value of the next-depth board 
+          var newAI = new AI(newGrid);
+          var newScore = newAI.expectiminimax(d - 1).score;
+
+          // If the new score is greater than the previous one, update the
+          // score and direction required to get that score
+          if (newScore > bestScore) {
+            bestScore = newScore;
+            bestMove = direction;
+          }
+        }
+      }
+      return {
+        score: bestScore,
+        move: bestMove
+      }
+    }
+  }
+
+  //Computer's Turn
+  //Will Iterate through adding 2 or 4 to each empty cell of the board
+  else {
+
+    for (i in this.grid.availableCells()) {
+      var cell = cells[i];
+
+      for (var newTileNumber in [2, 4]) {
+        var tile = new Tile(cell, parseInt(newTileNumber, 10));
+        this.grid.insertTile(tile);
+        //Evaluate this new board
+        var newScore = this.dfs(d).score;
+        if (newScore > bestScore) {bestScore = newScore;}
+        // Remove the cell so that everything is back to how it started
+        this.grid.removeTile(cell);
+      }
+    }
+    
+    return {score: bestScore}
+    
+    //end Computer's turn
+    this.grid.playerTurn = true;
+  }
+}
+
+
 // alpha-beta depth first search
 AI.prototype.search = function(depth, alpha, beta, positions, cutoffs) {
   var bestScore;

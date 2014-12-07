@@ -125,7 +125,7 @@ Implements a recursive depth-limited depth first search. d is the depth limit
 Inv: d >= 0
 ********************************************************************************/
 AI.prototype.dls = function(d) {
-  var bestScore;
+  var bestScore = 0;
   var bestMove = -1;
 
   if (this.grid.playerTurn) {
@@ -341,13 +341,13 @@ AI.prototype.getBest = function() {
   //return this.iterativeDeep();
 }
 
-// performs iterative deepening over the alpha-beta search
+// performs iterative deepening over the depth-limited search
 AI.prototype.iterativeDeep = function() {
   var start = (new Date()).getTime();
   var depth = 0;
   var best;
   do {
-    var newBest = this.search(depth, -10000, 10000, 0 ,0);
+    var newBest = this.dls(depth, -10000, 10000, 0 ,0);
     if (newBest.move == -1) {
       //console.log('BREAKING EARLY');
       break;

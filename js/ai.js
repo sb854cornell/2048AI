@@ -63,7 +63,7 @@ AI.prototype.expectiminimax = function (depth, alpha) {
           AIList[direction] = newAI
         }
       }
-      var p = new Parallel(AIList)
+      var p = new Parallel(AIList);
       (p.map(function (ai)
              {
               if (ai == null) {

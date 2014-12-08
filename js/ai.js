@@ -45,6 +45,7 @@ AI.prototype.expectiminimax = function (depth, alpha) {
         score: this.eval()
       }
     } else {
+      var AIList = [null, null, null, null];
       var move = -1;
       // Loop through the allowed moves (up, down, left right)
       for (var direction in [0, 1, 2, 3]) {
@@ -59,19 +60,32 @@ AI.prototype.expectiminimax = function (depth, alpha) {
           // Check the value of the board by makinga new AI with that board and
           // then running the expectiminimax algo on it
           var newAI = new AI(newGrid);
-          var newScore = newAI.expectiminimax(depth - 1, alpha).score;
-          //console.log(newScore);
-          // If the new score is greater than the previous one, update the
-          // score and direction required to get that score
-          if (newScore > alpha) {
-            alpha = newScore;
-            move = direction;
-          }
+          AIList[direction] = newAI
         }
       }
-
+      var p = new Parallel(AIList)
+      (p.map(function (ai)
+             {
+              if (ai == null) {
+                return { score: -1}
+                }
+              else {
+                return ai.expectiminimax(depth - 1, alpha).score}
+              })).reduce(function (s) {
+                  return Math.max.apply(Math, s.concat(alpha));
+                  });
+      //    var newScore = newAI.expectiminimax(depth - 1, alpha).score;
+      //    //console.log(newScore);
+      //    // If the new score is greater than the previous one, update the
+      //    // score and direction required to get that score
+      //    if (newScore > alpha) {
+      //      alpha = newScore;
+      //      move = direction;
+      //    }
+      //  }
+      //}
       return {
-        score: alpha,
+        score: p.data,
         move: move
       }
     }

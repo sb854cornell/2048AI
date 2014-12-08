@@ -1,7 +1,9 @@
 BETA_THRESHOLD = 20;
 
-function AI(grid) {
+function AI(grid, depth, alpha) {
   this.grid = grid;
+  this.depth = depth;
+  this.alpha = alpha;
 }
 
 // static evaluation function
@@ -59,7 +61,7 @@ AI.prototype.expectiminimax = function (depth, alpha) {
 
           // Check the value of the board by makinga new AI with that board and
           // then running the expectiminimax algo on it
-          var newAI = new AI(newGrid);
+          var newAI = new AI(newGrid, depth-1, alpha);
           AIList[direction] = newAI
         }
       }
@@ -70,9 +72,9 @@ AI.prototype.expectiminimax = function (depth, alpha) {
                 return { score: -1}
                 }
               else {
-                return ai.expectiminimax(depth - 1, alpha).score}
+                return ai.expectiminimax(ai.depth, ai.alpha).score}
               })).reduce(function (s) {
-                  return Math.max.apply(Math, s.concat(alpha));
+                  return Math.max.apply(Math, s);
                   });
       //    var newScore = newAI.expectiminimax(depth - 1, alpha).score;
       //    //console.log(newScore);

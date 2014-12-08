@@ -1,7 +1,7 @@
 function Grid(size) {
   this.size = size;
   this.startTiles   = 2;
-
+  
   this.cells = [];
 
   this.build();
@@ -107,6 +107,7 @@ Grid.prototype.clone = function() {
       }
     }
   }
+  newGrid.score = this.score;
   return newGrid;
 };
 
@@ -203,7 +204,6 @@ Grid.prototype.move = function (direction) {
 
           // Update the score
           score += merged.value;
-
           // The mighty 2048 tile
           if (merged.value === 2048) {
             won = true;

@@ -1,5 +1,9 @@
 BETA_THRESHOLD = 20;
 
+function intToFloat(num){
+  return num.toFixed(4);
+}
+
 function AI(grid) {
   this.grid = grid;
 }
@@ -24,10 +28,98 @@ AI.prototype.eval = function() {
     maxSum[1]*boardSim*monotoneScore;
 };
 
-AI.prototype.random = function(){}
+AI.prototype.fullyRandom = function(){
+  var moved = false;
+  var randDirection;
+  while (!moved) {
+    randDirection = Math.floor((Math.random() * 4))
+    if (randDirection == 4) randDirection = 3;
+    var newGrid = this.grid.clone();
+    moved = newGrid.move(randDirection);
+  }
+  return {move: randDirection}
+}
 
-function intToFloat(num){
-  return num.toFixed(4);
+AI.prototype.partiallyRandom = function (){
+  var moved = false;
+  var randDirection;
+  while (!moved) {
+    // don't move up.
+    randDirection = Math.floor((Math.random() * 4) + 1)
+    if (randDirection == 4) randDirection = 3;
+    var newGrid = this.grid.clone();
+    moved = newGrid.move(randDirection);
+  }
+  return {move: randDirection}
+}
+
+AI.prototype.greedyScore = function (depth, carryOver) {
+  var bestScore = carryOver;
+  var bestMove = -1;
+  if (this.grid.playerTurn) {
+    if (depth == 0) {
+      return {
+        score: carryOver
+      }
+    }
+    for (var direction in [0, 1, 2, 3]) {
+      var newGrid = this.grid.clone();
+      var performedMove = newGrid.move(direction);
+      if (performedMove.moved){
+        var newAI = new AI(newGrid);
+        var newScore = newAI.greedyScore(depth - 1, carryOver+performedMove.score);
+        if (newScore > bestScore) {
+          bestScore = newScore;
+          console.log(bestScore);
+          bestMove = direction;
+        }
+      }
+    }
+    return {
+      score: bestScore,
+      move: bestMove
+    }
+  }
+  else {
+    this.grid.playerTurn = true;
+    var score = 0;
+    // Get the available (empty) cells in the grid
+    var cells = this.grid.availableCells();
+
+    // Tile to be inserted could be a 2 or a 4
+    for (var value in [2, 4]) {
+
+      // Loop through the empty cells
+      for (var i in cells) {
+
+        // Create and insert a new tile with the given number
+        var cell = cells[i];
+        //console.log(cell);
+        var tile = new Tile(cell, parseInt(value, 10));
+        //console.log(tile);
+        this.grid.insertTile(tile);
+        //console.log(this.grid);
+
+        // Calculate the value of this board
+        var newScore = this.greedyScore(depth).score;
+        //console.log(newScore);
+        // The value to add to the total score is the probability that the value
+        // is chosen (prob of 2 or prob of 4) multiplied by the probability that
+        // that cell is chosen (each cell has equal probability) times the score
+        // of the new board
+        //console.log(1/intToFloat(cells.length));
+        // Remove the cell so that everything is back to how it started
+        if (newScore > score) {
+          score = newScore;
+        }
+        this.grid.removeTile(cell);
+      }
+    }
+    // Not sure if the return value is correct
+    return {
+      score: score
+    }
+  }
 }
 
 //
@@ -193,7 +285,14 @@ AI.prototype.dls = function(depth, alpha, beta) {
 
 // performs a search and returns the best move
 AI.prototype.getBest = function() {
-  return this.expectiminimax(3, -1000);
+  var res = this.greedyScore(3);
+  console.log(res.move);
+  if (res.move == -1) {
+    // nothing can be merged...
+    return this.fullyRandom();
+  }
+  else return res;
+  //return this.expectiminimax(3, -1000);
   //return this.iterativeDeep();
 }
 

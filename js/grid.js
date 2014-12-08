@@ -445,6 +445,50 @@ Grid.prototype.monotoneBoardScore = function () {
       expectedTrend = 0;
     }
   }
+  expectedTrend = 0; // restart
+  for (var y = 0; y < 4; y++){
+    lastVal = this.safeCellContent(this.indexes[0][y]);
+    thisVal = 0;
+    for (var x = 1; x < 4; x++) {
+      thisVal = this.safeCellContent(this.indexes[x][y]);
+      if (lastVal > thisVal && currentTrend <= 0) {
+        currentTrend = -1;
+      }
+      else if (lastVal == thisVal) {
+        currentTrend = 0;
+      }
+      else if (lastVal < thisVal && currentTrend >= 0
+               && currentTrend < 2) {
+        currentTrend = 1;
+      }
+      else {
+        // the column is not following a trend of increasing or
+        // decreasing. Set currentTrend to 100 to indicate that
+        // this column isn't monotonic
+        currentTrend = 100;
+      }
+      lastVal = thisVal;
+    }
+    if (expectedTrend == currentTrend || (expectedTrend == 0
+              && currentTrend != 100) || currentTrend == 0) {
+      trendSum += 1;
+      // set the expectedTrend of the next column accordingly
+      expectedTrend = currentTrend;
+    }
+    else if (expectedTrend != currentTrend && currentTrend != 100) {
+      // this column didn't follow the expected trend, but has some
+      // sort of trend going. Add .25 to the trendSum to indicate
+      // some order in the column, and see if the rest of the
+      // columns on the board match this trend.
+      trendSum += .25;
+      expectedTrend = currentTrend;
+    }
+    else {
+      // there's no order in the column. Set expecteTrend to 0 so that
+      // we can find a trend in the next column if it exists.
+      expectedTrend = 0;
+    }
+  }
   return trendSum;
 }
 

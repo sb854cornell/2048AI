@@ -4,6 +4,16 @@ function intToFloat(num){
   return num.toFixed(4);
 }
 
+
+function fastLog(n){
+  var counter = 0;
+  while (n>1) {
+    n = n >> 1;
+    counter ++;
+  }
+  return counter;
+}
+
 function AI(grid) {
   this.grid = grid;
 }
@@ -12,21 +22,69 @@ function AI(grid) {
 AI.prototype.eval = function() {
   // take into account the number of empty cells
   var emptyCells = Math.max(1, this.grid.availableCells().length);
+  //console.log("emptyCells "+emptyCells)
   // take into account the maximum value on the board
-  // that would result from this move. The log
-  // is computed before the value is returned
-  // Also returns the sum, scaled by using log base 10.
-  var maxSum = this.grid.maxAndSum();
+  // that would result from this move. 
+  var max = Math.max(1, this.grid.max());
+  //console.log("gridmax "+max)
   // take into account the similarity of the tiles on
   // the board
   var boardSim = Math.max(1, this.grid.boardSimilarityScore());
+  //console.log("boardSim "+boardSim)
+  //var boardSim = this.grid.boardSimilarityScore();
   // take into account the monotonicity of the
   // board
   var monotoneScore = Math.max(1, this.grid.monotoneBoardScore());
-  
-  return emptyCells*maxSum[0]*
-    maxSum[1]*boardSim*monotoneScore;
+  //console.log("monotone "+monotoneScore)
+  return emptyCells*max*boardSim*monotoneScore;
 };
+
+AI.prototype.greedyEval = function () {
+  bestMove = -1;
+  bestScore = 0;
+  for (var direction in [0, 1, 2, 3]) {
+    var newGrid = this.grid.clone();
+    if (newGrid.move(direction).moved){
+      var newAI = new AI(newGrid);
+      var newScore = newAI.eval();
+      if (newScore > bestScore) {
+        bestScore = newScore;
+        bestMove = direction;
+      }
+    }
+  }
+  return {
+    score: bestScore,
+    move: bestMove
+  }
+}
+
+AI.prototype.ignoreAdversary = function (depth) {
+  bestMove = -1;
+  bestScore = 0;
+  if (depth == 0) {
+    return {
+      score: this.eval()
+    }
+  }
+  for (var direction in [0,1,2,3]) {
+      var newGrid = this.grid.clone();
+      if (newGrid.move(direction).moved){
+        var newAI = new AI(newGrid);
+        // ignore the adversary.
+        newAI.grid.playerTurn = true;
+        var newScore = newAI.ignoreAdversary(depth - 1).score;
+        if (newScore > bestScore) {
+          bestScore = newScore;
+          bestMove = direction;
+        }
+      }
+  }
+  return {
+      score: bestScore,
+      move: bestMove
+  }
+}
 
 AI.prototype.fullyRandom = function(){
   var moved = false;
@@ -67,10 +125,12 @@ AI.prototype.greedyScore = function (depth, carryOver) {
       var performedMove = newGrid.move(direction);
       if (performedMove.moved){
         var newAI = new AI(newGrid);
-        var newScore = newAI.greedyScore(depth - 1, carryOver+performedMove.score);
+        //console.log(performedMove.score);
+        var resultScore = performedMove.score;
+        var newScore = newAI.greedyScore(depth - 1, carryOver+resultScore).score;
         if (newScore > bestScore) {
           bestScore = newScore;
-          console.log(bestScore);
+          //console.log(bestScore);
           bestMove = direction;
         }
       }
@@ -81,8 +141,8 @@ AI.prototype.greedyScore = function (depth, carryOver) {
     }
   }
   else {
-    this.grid.playerTurn = true;
     var score = 0;
+    this.grid.playerTurn = true;
     // Get the available (empty) cells in the grid
     var cells = this.grid.availableCells();
 
@@ -101,7 +161,7 @@ AI.prototype.greedyScore = function (depth, carryOver) {
         //console.log(this.grid);
 
         // Calculate the value of this board
-        var newScore = this.greedyScore(depth).score;
+        var newScore = this.greedyScore(depth, carryOver).score;
         //console.log(newScore);
         // The value to add to the total score is the probability that the value
         // is chosen (prob of 2 or prob of 4) multiplied by the probability that
@@ -142,8 +202,9 @@ AI.prototype.expectiminimax = function (depth, alpha) {
       for (var direction in [0, 1, 2, 3]) {
         // Clone the grid and make the move on it
         var newGrid = this.grid.clone();
-        //this.grid.playerTurn = false;
-        if (newGrid.move(direction).moved) {
+        var resMove = newGrid.move(direction);
+        
+        if (resMove.moved) {
           // Move was successful
           // Check if the value of this new board is greater than the cached
           // value stored in score
@@ -151,7 +212,9 @@ AI.prototype.expectiminimax = function (depth, alpha) {
           // Check the value of the board by makinga new AI with that board and
           // then running the expectiminimax algo on it
           var newAI = new AI(newGrid);
-          var newScore = newAI.expectiminimax(depth - 1, alpha).score;
+          var mergeScore = Math.max(1,fastLog(resMove.score));
+          //console.log(mergeScore);
+          var newScore = newAI.expectiminimax(depth - 1, alpha).score * mergeScore;
           //console.log(newScore);
           // If the new score is greater than the previous one, update the
           // score and direction required to get that score
@@ -231,14 +294,15 @@ AI.prototype.dls = function(depth, alpha, beta) {
     //Recursive Case
     else {
       for (var direction in [0, 1, 2, 3]) {
+        //console.log("direction "+direction)
         var newGrid = this.grid.clone();
-        newGrid.playerTurn = false;
-        if (newGrid.move(direction).moved) { // Move was successful
+        var gridMove = newGrid.move(direction)
+        if (gridMove.moved) { // Move was successful
 
           // Check the value of the next-depth board 
           var newAI = new AI(newGrid);
           var newScore = newAI.dls(depth - 1, alpha, beta).score;
-
+          //console.log("direction "+direction+" score "+newScore)
           // If the new score is greater than the previous one, update the
           // score and direction required to get that score
           if (newScore > alpha) {
@@ -285,15 +349,17 @@ AI.prototype.dls = function(depth, alpha, beta) {
 
 // performs a search and returns the best move
 AI.prototype.getBest = function() {
-  var res = this.greedyScore(3);
-  console.log(res.move);
-  if (res.move == -1) {
-    // nothing can be merged...
-    return this.fullyRandom();
-  }
-  else return res;
-  //return this.expectiminimax(3, -1000);
+  //var res = this.greedyScore(1,0);
+  //console.log(res.move);
+  //if (res.move == -1) {
+  //  // nothing can be merged...
+  //  return this.fullyRandom();
+  //}
+  //else return res;
+  return this.expectiminimax(3, -1000);
   //return this.iterativeDeep();
+  //return this.greedyEval()
+  //return res;
 }
 
 // performs iterative deepening over the depth-limited search
@@ -302,7 +368,10 @@ AI.prototype.iterativeDeep = function() {
   var depth = 0;
   var best;
   do {
+    //var newBest = this.ignoreAdversary(depth);
     var newBest = this.dls(depth, -1000, 1000);
+    //var newBest = this.greedyScore(depth,0)
+    //var newBest = this.expectiminimax(depth, -1000);
     if (newBest.move == -1) {
       //console.log('BREAKING EARLY');
       break;

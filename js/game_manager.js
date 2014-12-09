@@ -68,21 +68,27 @@ GameManager.prototype.move = function(direction) {
 
   if (result.moved) {
       this.grid.computerMove();
-  } else {
-    this.won = true;
+  }
+  else {
+    if (!this.grid.movesAvailable()) {
+      this.over = true; // Game over!
+    }
+    //else this.won = true;
   }
 
   //console.log(this.grid.valueSum());
-
-  if (!this.grid.movesAvailable()) {
-    this.over = true; // Game over!
-  }
 
   this.actuate();
 }
 
 // moves continuously until game is over
 GameManager.prototype.run = function() {
+  //var best = this.ai.partiallyRandom();
+  //this.move(best.move);
+  //console.log(best.move);
+  //if (this.running && !this.over) {
+  //  this.run();
+  //}
   var best = this.ai.getBest();
   this.move(best.move);
   var timeout = animationDelay;

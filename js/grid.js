@@ -1,11 +1,20 @@
 function Grid(size) {
   this.size = size;
   this.startTiles   = 2;
-
+  
   this.cells = [];
 
   this.build();
   this.playerTurn = true;
+}
+
+function fastLog(n){
+  var counter = 0;
+  while (n>1) {
+    n = n >> 1;
+    counter ++;
+  }
+  return counter;
 }
 
 Grid.prototype.probabilityOfNewTile = function (value) {
@@ -107,6 +116,7 @@ Grid.prototype.clone = function() {
       }
     }
   }
+  newGrid.score = this.score;
   return newGrid;
 };
 
@@ -203,7 +213,6 @@ Grid.prototype.move = function (direction) {
 
           // Update the score
           score += merged.value;
-
           // The mighty 2048 tile
           if (merged.value === 2048) {
             won = true;
@@ -323,23 +332,26 @@ Grid.prototype.toString = function() {
   return string;
 }
 
-Grid.prototype.maxAndSum = function() {
+Grid.prototype.max = function() {
   var max = 0;
   var sum = 0;
-  var retArray = []
   for (var x=0; x<4; x++) {
     for (var y=0; y<4; y++) {
       if (this.cellOccupied(this.indexes[x][y])) {
         var value = this.cellContent(this.indexes[x][y]).value;
         if (value > max) {
           max = value;
+          if ((x == 0 && (y ==0 || y == 3)) ||
+                (x == 3 && (y ==0 || y == 3))) {
+            max << 4;
+          }
         }
-        sum += value;
       }
     }
   }
-  retArray.push((Math.log(max) / Math.log(2)), Math.log(sum))
-  return retArray;
+  //console.log("max "+max)
+  //console.log("logged max"+fastLog(max))
+  return fastLog(max);
 }
 
 // Compute the similarity of each tile on the board
@@ -350,36 +362,84 @@ Grid.prototype.maxAndSum = function() {
 // spaces, you want the resulting boardSimilarityScore
 // to be high, and vice versa.
 Grid.prototype.boardSimilarityScore = function () {
-  var sim = 0
+  var sim = 5;
   for (var x=0; x<4; x++){
     for (var y=0; y<4; y++){
       if (this.cellOccupied(this.indexes[x][y])) {
         var blockSim = 0;
         var currBlockVal = this.cellContent(this.indexes[x][y]).value;
-        // check if any of the 4 blocks availabe in one move
+        var thisBlockVal;
+        // check if any of the 4 blocks available in one move
         // are the same as this block
-        if (this.withinBounds({x:x-1, y:y}) &&
-            currBlockVal == this.cellContent(this.indexes[x-1][y])) {
-          blockSim += 1;
+        if (this.withinBounds({x:x-1, y:y})){
+          thisBlockVal = this.cellContent(this.indexes[x-1][y]);
+          if (currBlockVal == thisBlockVal) {
+            blockSim -= 0.5;
+          }
+          else {
+            currLog = fastLog(currBlockVal);
+            thisLog = fastLog(thisBlockVal);
+            diff = Math.abs(currLog - thisLog);
+            if (diff <= 2) {
+              blockSim += 1;
+            }
+            else blockSim -= (1*diff);
+          }
         }
-        if (this.withinBounds({x:x-1, y:y-1}) &&
-            currBlockVal == this.cellContent(this.indexes[x-1][y-1])) {
-          blockSim += 1;
+        if (this.withinBounds({x:x-1, y:y-1})){
+          thisBlockVal = this.cellContent(this.indexes[x-1][y-1]);
+          if (currBlockVal == thisBlockVal) {
+            blockSim -= 0.5;
+          }
+          else {
+            currLog = fastLog(currBlockVal);
+            thisLog = fastLog(thisBlockVal);
+            diff = Math.abs(currLog - thisLog);
+            if (diff <= 2) {
+              blockSim += 1;
+            }
+            else blockSim -= (1*diff);
+          }
         }
-        if (this.withinBounds({x:x+1, y:y}) &&
-            currBlockVal == this.cellContent(this.indexes[x+1][y])) {
-          blockSim += 1;
+        if (this.withinBounds({x:x+1, y:y})){
+          thisBlockVal = this.cellContent(this.indexes[x+1][y]);
+          if (currBlockVal == thisBlockVal) {
+            blockSim -= 0.5;
+          }
+          else {
+            currLog = fastLog(currBlockVal);
+            thisLog = fastLog(thisBlockVal);
+            diff = Math.abs(currLog - thisLog);
+            if (diff <= 2) {
+              blockSim += 1;
+            }
+            else blockSim -= (1*diff);
+          }
         }
-        if (this.withinBounds({x:x+1, y:y+1}) &&
-            currBlockVal == this.cellContent(this.indexes[x+1][y+1])) {
-          blockSim += 1;
+        if (this.withinBounds({x:x+1, y:y+1})) {
+          thisBlockVal = this.cellContent(this.indexes[x+1][y+1]);
+          if (currBlockVal == thisBlockVal) {
+            blockSim -= 0.5;
+          }
+          else {
+            currLog = fastLog(currBlockVal);
+            thisLog = fastLog(thisBlockVal);
+            diff = Math.abs(currLog - thisLog);
+            if (diff <= 2) {
+              blockSim += 1;
+            }
+            else blockSim -= (1*diff);
+          }
         }
         // weight the block similarity by the log base 2 value of
         // the block, since similar blocks of greater value are more
         // valuable.
-        sim += (blockSim * (Math.log(currBlockVal) / Math.log(2)));
+        sim += (fastLog(blockSim) * fastLog(currBlockVal));
       }
     }
+  }
+  if (sim == 0) {
+    sim = 1;
   }
   return sim;
 }
@@ -436,16 +496,62 @@ Grid.prototype.monotoneBoardScore = function () {
       // sort of trend going. Add .25 to the trendSum to indicate
       // some order in the column, and see if the rest of the
       // columns on the board match this trend.
-      trendSum += .25;
+      trendSum += 0.25;
       expectedTrend = currentTrend;
     }
     else {
       // there's no order in the column. Set expecteTrend to 0 so that
       // we can find a trend in the next column if it exists.
+      trendSum -= 0.5
       expectedTrend = 0;
     }
   }
-  return trendSum;
+  expectedTrend = 0; // restart
+  for (var y = 0; y < 4; y++){
+    lastVal = this.safeCellContent(this.indexes[0][y]);
+    thisVal = 0;
+    for (var x = 1; x < 4; x++) {
+      thisVal = this.safeCellContent(this.indexes[x][y]);
+      if (lastVal > thisVal && currentTrend <= 0) {
+        currentTrend = -1;
+      }
+      else if (lastVal == thisVal) {
+        currentTrend = 0;
+      }
+      else if (lastVal < thisVal && currentTrend >= 0
+               && currentTrend < 2) {
+        currentTrend = 1;
+      }
+      else {
+        // the column is not following a trend of increasing or
+        // decreasing. Set currentTrend to 100 to indicate that
+        // this column isn't monotonic
+        currentTrend = 100;
+      }
+      lastVal = thisVal;
+    }
+    if (expectedTrend == currentTrend || (expectedTrend == 0
+              && currentTrend != 100) || currentTrend == 0) {
+      trendSum += 1;
+      // set the expectedTrend of the next column accordingly
+      expectedTrend = currentTrend;
+    }
+    else if (expectedTrend != currentTrend && currentTrend != 100) {
+      // this column didn't follow the expected trend, but has some
+      // sort of trend going. Add .25 to the trendSum to indicate
+      // some order in the column, and see if the rest of the
+      // columns on the board match this trend.
+      trendSum += 0.25;
+      expectedTrend = currentTrend;
+    }
+    else {
+      // there's no order in the column. Set expecteTrend to 0 so that
+      // we can find a trend in the next column if it exists.
+      trendSum -= 0.5
+      expectedTrend = 0;
+    }
+  }
+  return fastLog(trendSum);
 }
 
 // check for win

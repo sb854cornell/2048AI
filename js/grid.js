@@ -8,13 +8,24 @@ function Grid(size) {
   this.playerTurn = true;
 }
 
+function intToFloat(num){
+  return num.toFixed(4);
+}
+
 function fastLog(n){
   var counter = 0;
+  var inverse = false;
+  if (n < 1) {
+    n = n*-1;
+  }
   while (n>1) {
     n = n >> 1;
     counter ++;
   }
-  return counter;
+  if (counter == 0) {
+    return 1;
+  }
+  return inverse ? 1/intToFloat(counter) : counter;
 }
 
 Grid.prototype.probabilityOfNewTile = function (value) {
@@ -334,21 +345,26 @@ Grid.prototype.toString = function() {
 
 Grid.prototype.max = function() {
   var max = 0;
-  var sum = 0;
+  var posX = 0;
+  var posY = 0;
   for (var x=0; x<4; x++) {
     for (var y=0; y<4; y++) {
       if (this.cellOccupied(this.indexes[x][y])) {
         var value = this.cellContent(this.indexes[x][y]).value;
         if (value > max) {
           max = value;
-          if ((x == 0 && (y ==0 || y == 3)) ||
-                (x == 3 && (y ==0 || y == 3))) {
-            max << 4;
-          }
+          posX = x;
+          posY = y;
         }
       }
     }
   }
+  if ((posX == 0 && (posY == 0 || posY == 3)) ||
+           (posX == 3 && (posY == 0 || posY == 3))) max << 2;
+  else if (posX >= 1 && posY >= 1) {
+    max >> 2;
+  }
+  else max << 1;
   //console.log("max "+max)
   //console.log("logged max"+fastLog(max))
   return fastLog(max);
@@ -362,7 +378,7 @@ Grid.prototype.max = function() {
 // spaces, you want the resulting boardSimilarityScore
 // to be high, and vice versa.
 Grid.prototype.boardSimilarityScore = function () {
-  var sim = 5;
+  var sim = 0;
   for (var x=0; x<4; x++){
     for (var y=0; y<4; y++){
       if (this.cellOccupied(this.indexes[x][y])) {
@@ -374,7 +390,7 @@ Grid.prototype.boardSimilarityScore = function () {
         if (this.withinBounds({x:x-1, y:y})){
           thisBlockVal = this.cellContent(this.indexes[x-1][y]);
           if (currBlockVal == thisBlockVal) {
-            blockSim -= 0.5;
+            blockSim += 0.5;
           }
           else {
             currLog = fastLog(currBlockVal);
@@ -389,7 +405,7 @@ Grid.prototype.boardSimilarityScore = function () {
         if (this.withinBounds({x:x-1, y:y-1})){
           thisBlockVal = this.cellContent(this.indexes[x-1][y-1]);
           if (currBlockVal == thisBlockVal) {
-            blockSim -= 0.5;
+            blockSim += 0.5;
           }
           else {
             currLog = fastLog(currBlockVal);
@@ -398,7 +414,7 @@ Grid.prototype.boardSimilarityScore = function () {
             if (diff <= 2) {
               blockSim += 1;
             }
-            else blockSim -= (1*diff);
+            else blockSim += (1*diff);
           }
         }
         if (this.withinBounds({x:x+1, y:y})){
@@ -413,7 +429,7 @@ Grid.prototype.boardSimilarityScore = function () {
             if (diff <= 2) {
               blockSim += 1;
             }
-            else blockSim -= (1*diff);
+            else blockSim += (1*diff);
           }
         }
         if (this.withinBounds({x:x+1, y:y+1})) {
@@ -428,7 +444,7 @@ Grid.prototype.boardSimilarityScore = function () {
             if (diff <= 2) {
               blockSim += 1;
             }
-            else blockSim -= (1*diff);
+            else blockSim += (1*diff);
           }
         }
         // weight the block similarity by the log base 2 value of

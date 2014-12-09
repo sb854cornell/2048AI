@@ -7,11 +7,18 @@ function intToFloat(num){
 
 function fastLog(n){
   var counter = 0;
+  var inverse = false;
+  if (n < 1) {
+    n = n*-1;
+  }
   while (n>1) {
     n = n >> 1;
     counter ++;
   }
-  return counter;
+  if (counter == 0) {
+    return 1;
+  }
+  return inverse ? 1/intToFloat(counter) : counter;
 }
 
 function AI(grid) {
@@ -21,20 +28,20 @@ function AI(grid) {
 // static evaluation function
 AI.prototype.eval = function() {
   // take into account the number of empty cells
-  var emptyCells = Math.max(1, this.grid.availableCells().length);
+  var emptyCells = this.grid.availableCells().length<<1;
   //console.log("emptyCells "+emptyCells)
   // take into account the maximum value on the board
   // that would result from this move. 
-  var max = Math.max(1, this.grid.max());
+  var max = this.grid.max();
   //console.log("gridmax "+max)
   // take into account the similarity of the tiles on
   // the board
-  var boardSim = Math.max(1, this.grid.boardSimilarityScore());
+  var boardSim = this.grid.boardSimilarityScore();
   //console.log("boardSim "+boardSim)
   //var boardSim = this.grid.boardSimilarityScore();
   // take into account the monotonicity of the
   // board
-  var monotoneScore = Math.max(1, this.grid.monotoneBoardScore());
+  var monotoneScore = this.grid.monotoneBoardScore();
   //console.log("monotone "+monotoneScore)
   return emptyCells*max*boardSim*monotoneScore;
 };
@@ -198,6 +205,7 @@ AI.prototype.expectiminimax = function (depth, alpha) {
       }
     } else {
       var move = -1;
+      var score = 0;
       // Loop through the allowed moves (up, down, left right)
       for (var direction in [0, 1, 2, 3]) {
         // Clone the grid and make the move on it
@@ -212,20 +220,20 @@ AI.prototype.expectiminimax = function (depth, alpha) {
           // Check the value of the board by makinga new AI with that board and
           // then running the expectiminimax algo on it
           var newAI = new AI(newGrid);
-          var mergeScore = Math.max(1,fastLog(resMove.score));
+          var mergeScore = fastLog(resMove.score) > 2? 2 : 1;
           //console.log(mergeScore);
-          var newScore = newAI.expectiminimax(depth - 1, alpha).score * mergeScore;
+          var newScore = newAI.expectiminimax(depth - 1, alpha).score * mergeScore;// * mergeScore;
           //console.log(newScore);
           // If the new score is greater than the previous one, update the
           // score and direction required to get that score
-          if (newScore > alpha) {
-            alpha = newScore;
+          if (newScore > score) {
+            score = newScore;
             move = direction;
           }
         }
       }
       return {
-        score: alpha,
+        score: score,
         move: move
       }
     }
@@ -236,9 +244,13 @@ AI.prototype.expectiminimax = function (depth, alpha) {
     var score = 0;
     // Get the available (empty) cells in the grid
     var cells = this.grid.availableCells();
-
+    var valTile;
+    if (cells.length <= 6) {
+      valTile = [2,4];
+    }
+    else valTile = [2];
     // Tile to be inserted could be a 2 or a 4
-    for (var value in [2, 4]) {
+    for (var value in valTile) {
 
       // Loop through the empty cells
       for (var i in cells) {
@@ -266,9 +278,9 @@ AI.prototype.expectiminimax = function (depth, alpha) {
       }
       // if this score is less than the beta threshold, going to 4
       // isn't really going to help
-      if (score < BETA_THRESHOLD) {
-        break;
-      }
+      //if (score < BETA_THRESHOLD) {
+      //  break;
+      //}
     }
     // Not sure if the return value is correct
     return {

@@ -16,7 +16,6 @@ function fastLog(n){
 
 function AI(grid) {
   this.grid = grid;
-  this.depth = depth;
 }
 
 // static evaluation function

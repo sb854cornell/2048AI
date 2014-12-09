@@ -414,7 +414,7 @@ Grid.prototype.boardSimilarityScore = function () {
             if (diff <= 2) {
               blockSim += 1;
             }
-            else blockSim += (1*diff);
+            else blockSim -= (1*diff);
           }
         }
         if (this.withinBounds({x:x+1, y:y})){
@@ -429,7 +429,7 @@ Grid.prototype.boardSimilarityScore = function () {
             if (diff <= 2) {
               blockSim += 1;
             }
-            else blockSim += (1*diff);
+            else blockSim -= (1*diff);
           }
         }
         if (this.withinBounds({x:x+1, y:y+1})) {
@@ -444,7 +444,7 @@ Grid.prototype.boardSimilarityScore = function () {
             if (diff <= 2) {
               blockSim += 1;
             }
-            else blockSim += (1*diff);
+            else blockSim -= (1*diff);
           }
         }
         // weight the block similarity by the log base 2 value of
@@ -454,10 +454,7 @@ Grid.prototype.boardSimilarityScore = function () {
       }
     }
   }
-  if (sim == 0) {
-    sim = 1;
-  }
-  return sim;
+  return fastLog(sim);
 }
 
 Grid.prototype.safeCellContent = function (cell) {
@@ -518,7 +515,6 @@ Grid.prototype.monotoneBoardScore = function () {
     else {
       // there's no order in the column. Set expecteTrend to 0 so that
       // we can find a trend in the next column if it exists.
-      trendSum -= 0.5
       expectedTrend = 0;
     }
   }
@@ -563,7 +559,6 @@ Grid.prototype.monotoneBoardScore = function () {
     else {
       // there's no order in the column. Set expecteTrend to 0 so that
       // we can find a trend in the next column if it exists.
-      trendSum -= 0.5
       expectedTrend = 0;
     }
   }

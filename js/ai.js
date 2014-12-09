@@ -1,8 +1,5 @@
 BETA_THRESHOLD = 20;
 
-<<<<<<< HEAD
-function AI(grid, depth, alpha) {
-=======
 function intToFloat(num){
   return num.toFixed(4);
 }

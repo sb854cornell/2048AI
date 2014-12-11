@@ -211,7 +211,7 @@ AI.prototype.expectiminimax = function (depth) {
         // Clone the grid and make the move on it
         var newGrid = this.grid.clone();
         var resMove = newGrid.move(direction);
-        
+
         if (resMove.moved) {
           // Move was successful
           // Check if the value of this new board is greater than the cached
@@ -220,7 +220,6 @@ AI.prototype.expectiminimax = function (depth) {
           // Check the value of the board by makinga new AI with that board and
           // then running the expectimax algo on it
           var newAI = new AI(newGrid);
-          var newScore = newAI.expectimax(depth - 1, alpha).score; 
           var newScore = newAI.expectiminimax(depth - 1).score; 
           // If the new score is greater than the previous one, update the
           // score and direction required to get that score
@@ -262,7 +261,6 @@ AI.prototype.expectiminimax = function (depth) {
         //console.log(this.grid);
 
         // Calculate the value of this board
-        var newScore = this.expectimax(depth, alpha).score;
         var newScore = this.expectiminimax(depth).score;
         // The value to add to the total score is the probability that the value
         // is chosen (prob of 2 or prob of 4) multiplied by the probability that
@@ -433,12 +431,12 @@ AI.prototype.calcAvg = function (newTime) {
 AI.prototype.getBestExpectimax = function() {
   var d = 3;
   var start = (new Date()).getTime();
-  var best = this.expectimax(d, -10000);
+  var best = this.expectiminimax(d, -10000);
 
   if (best.move == -1) {
     d--;
     while (d >=0 && best.move == -1){
-      best = this.expectimax(d, -10000)
+      best = this.expectiminimax(d, -10000)
       d--;
     }
     this.times.push((new Date()).getTime() - start);

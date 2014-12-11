@@ -180,6 +180,7 @@ GameManager.prototype.move = function(direction) {
     console.log("game over");
     console.log("Max tile: "+this.grid.max());
     console.log("Avg time per move: "+this.ai.avgTime);
+    console.log("Total Time for this run: "+this.ai.totalTime);
     console.log("Number of moves: "+this.ai.numMoves);
     console.log("Score: "+this.score);
     console.log("new game");
@@ -215,11 +216,12 @@ GameManager.prototype.run = function(which) {
   //best = this.ai.getBestExpectimax();
 
   this.move(best.move);
-  var timeout = animationDelay;
+  //var timeout = animationDelay;
   if (this.running && !this.over) {
-    var self = this;
-    this.moveAgainTimeout = setTimeout(function() {
-      self.run(self.whichAI);
-    }, timeout);
+    this.run(this.whichAI);
+    //var self = this;
+    //this.moveAgainTimeout = setTimeout(function() {
+    //  self.run(self.whichAI);
+    //}, timeout);
   }
 }

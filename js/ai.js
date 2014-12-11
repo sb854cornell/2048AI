@@ -2,6 +2,7 @@ function AI(grid) {
   this.grid = grid;
   this.avgTime = 0.0;
   this.numMoves = 0;
+  this.totalTime = 0.0;
 }
 
 // static evaluation function
@@ -425,6 +426,7 @@ AI.prototype.dls = function(depth, alpha, beta) {
 }
 
 AI.prototype.calcAvg = function (newTime) {
+  this.totalTime += newTime;
   var oldSum = this.avgTime*(this.numMoves - 1);
   this.avgTime = (oldSum + newTime)/this.numMoves;
 }

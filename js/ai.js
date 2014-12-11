@@ -430,6 +430,7 @@ AI.prototype.calcAvg = function (newTime) {
 // performs an expectimax search and returns the best move
 AI.prototype.getBestExpectimax = function() {
   var d = 3;
+  this.numMoves++;
   var start = (new Date()).getTime();
   var best = this.expectiminimax(d, -10000);
 
@@ -439,16 +440,17 @@ AI.prototype.getBestExpectimax = function() {
       best = this.expectiminimax(d, -10000)
       d--;
     }
-    this.times.push((new Date()).getTime() - start);
+    this.calcAvg((new Date()).getTime() - start);
     return best;
   }
-  this.times.push((new Date()).getTime() - start);
+  this.calcAvg((new Date()).getTime() - start);
   return best;
 }
 
 // performs a minimax search and returns the best move
 AI.prototype.getBestMinimax = function() {
   var d = 3;
+  this.numMoves++;
   var start = (new Date()).getTime();
   var best = this.minimax(d, -10000, 10000);
 
@@ -468,6 +470,7 @@ AI.prototype.getBestMinimax = function() {
 // performs an IDDFS search and returns the best move
 AI.prototype.getBestIDDFS = function() {
   var d = 3;
+  this.numMoves++;
   var start = (new Date()).getTime();
   var best = this.dls(d, -10000, 10000);
 
@@ -477,10 +480,10 @@ AI.prototype.getBestIDDFS = function() {
       best = this.dls(d, -10000, 10000)
       d--;
     }
-    this.times.push((new Date()).getTime() - start);
+    this.calcAvg((new Date()).getTime() - start);
     return best;
   }
-  this.times.push((new Date()).getTime() - start);
+  this.calcAvg((new Date()).getTime() - start);
   return best;
 }
 

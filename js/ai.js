@@ -491,12 +491,14 @@ AI.prototype.getBestIDDFS = function() {
 
 // returns a random move
 AI.prototype.getRandom = function() {
+  this.numMoves++;
   var random = this.fullyRandom();
   return random;
 }
 
 // returns a partially random move
 AI.prototype.getPartiallyRandom = function() {
+  this.numMoves++;
   var random = this.partiallyRandom();
   return random;
 }

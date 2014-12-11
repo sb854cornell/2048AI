@@ -180,6 +180,7 @@ GameManager.prototype.move = function(direction) {
     console.log("game over");
     console.log("Max tile: "+this.grid.max());
     console.log("Avg time per move: "+this.ai.avgTime);
+    console.log("Number of moves: "+this.ai.numMoves);
     console.log("Score: "+this.score);
     console.log("new game");
     this.restart();
@@ -189,7 +190,7 @@ GameManager.prototype.move = function(direction) {
       this.run(this.whichAI);
     }
   }
-  //this.actuate();
+  this.actuate();
 }
 
 // moves continuously until game is over

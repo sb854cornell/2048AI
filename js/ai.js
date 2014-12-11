@@ -20,7 +20,7 @@ AI.prototype.eval = function() {
   return emptyCells*boardSim*weightedScore*monotoneScore;
 };
 
-function intToFloat(num){
+function intToFloat(num) {
   return num.toFixed(4);
 }
 
@@ -178,7 +178,7 @@ AI.prototype.greedyScore = function (depth, carryOver) {
 }
 
 //
-// Expectiminimax algorithm
+// Expectimax algorithm
 //
 AI.prototype.expectiminimax = function (depth) {
   if (this.grid.playerTurn) {
@@ -211,7 +211,7 @@ AI.prototype.expectiminimax = function (depth) {
         // Clone the grid and make the move on it
         var newGrid = this.grid.clone();
         var resMove = newGrid.move(direction);
-        
+
         if (resMove.moved) {
           // Move was successful
           // Check if the value of this new board is greater than the cached
@@ -352,6 +352,73 @@ AI.prototype.minimax = function(depth, alpha, beta) {
         }
       }
     }
+
+    return {score: beta}
+  }
+}
+
+/***************************** DEPTH LIMITED SEARCH ****************************
+Implements a recursive depth-limited depth first search. d is the depth limit
+Inv: depth >= 0
+*******************************************************************************/
+AI.prototype.dls = function(depth, alpha, beta) {
+  var bestMove = -1;
+  if (this.grid.playerTurn) {
+    
+    //Base Case
+    if (depth == 0) {return {score: this.eval()}}
+
+    //Recursive Case
+    else {
+      for (var direction in [0, 1, 2, 3]) {
+        //console.log("direction "+direction)
+        var newGrid = this.grid.clone();
+        var gridMove = newGrid.move(direction)
+        if (gridMove.moved) { // Move was successful
+
+          // Check the value of the next-depth board 
+          var newAI = new AI(newGrid);
+          var newScore = newAI.dls(depth - 1, alpha, beta).score;
+          //console.log("direction "+direction+" score "+newScore)
+          // If the new score is greater than the previous one, update the
+          // score and direction required to get that score
+          if (newScore > alpha) {
+            alpha = newScore;
+            bestMove = direction;
+          }
+          if (beta <= alpha) {
+            break
+          }
+        }
+      }
+      return {
+        score: alpha,
+        move: bestMove
+      }
+    }
+  }
+
+  //Computer's Turn
+  //Will Iterate through adding 2 or 4 to each empty cell of the board
+  else {
+    this.grid.playerTurn = true;
+    var cells = this.grid.availableCells()
+    for (i in cells) {
+      var cell = cells[i];
+
+      for (var newTileNumber in [2, 4]) {
+        var tile = new Tile(cell, parseInt(newTileNumber, 10));
+        this.grid.insertTile(tile);
+        //Evaluate this new board
+        var newScore = this.dls(depth, alpha, beta).score;
+        if (newScore < beta) {beta = newScore;}
+        // Remove the cell so that everything is back to how it started
+        this.grid.removeTile(cell);
+        if (beta <= alpha) {
+          break;
+        }
+      }
+    }
     
     return {score: beta}
   }
@@ -362,18 +429,17 @@ AI.prototype.calcAvg = function (newTime) {
   this.avgTime = (oldSum + newTime)/this.numMoves;
 }
 
-// performs a search and returns the best move
-AI.prototype.getBest = function() {
+// performs an expectimax search and returns the best move
+AI.prototype.getBestExpectimax = function() {
   var d = 3;
   this.numMoves++;
   var start = (new Date()).getTime();
-  //var best = this.minimax(d, -10000, 10000);
-  var best = this.expectiminimax(d);
+  var best = this.expectiminimax(d, -10000);
+
   if (best.move == -1) {
-    d --;
+    d--;
     while (d >=0 && best.move == -1){
-      best = this.expectiminimax(d);
-      //best = this.minimax(d, -10000, 10000)
+      best = this.expectiminimax(d, -10000)
       d--;
     }
     this.calcAvg((new Date()).getTime() - start);
@@ -381,6 +447,58 @@ AI.prototype.getBest = function() {
   }
   this.calcAvg((new Date()).getTime() - start);
   return best;
+}
+
+// performs a minimax search and returns the best move
+AI.prototype.getBestMinimax = function() {
+  var d = 3;
+  this.numMoves++;
+  var start = (new Date()).getTime();
+  var best = this.minimax(d, -10000, 10000);
+
+  if (best.move == -1) {
+    d --;
+    while (d >=0 && best.move == -1){
+      best = this.minimax(d, -10000, 10000)
+      d--;
+    }
+    this.calcAvg((new Date()).getTime() - start);
+    return best;
+  }
+  this.calcAvg((new Date()).getTime() - start);
+  return best;
+}
+
+// performs an IDDFS search and returns the best move
+AI.prototype.getBestIDDFS = function() {
+  var d = 3;
+  this.numMoves++;
+  var start = (new Date()).getTime();
+  var best = this.dls(d, -10000, 10000);
+
+  if (best.move == -1) {
+    d--;
+    while (d >=0 && best.move == -1) {
+      best = this.dls(d, -10000, 10000)
+      d--;
+    }
+    this.calcAvg((new Date()).getTime() - start);
+    return best;
+  }
+  this.calcAvg((new Date()).getTime() - start);
+  return best;
+}
+
+// returns a random move
+AI.prototype.getRandom = function() {
+  var random = this.fullyRandom();
+  return random;
+}
+
+// returns a partially random move
+AI.prototype.getPartiallyRandom = function() {
+  var random = this.partiallyRandom();
+  return random;
 }
 
 AI.prototype.translate = function(move) {

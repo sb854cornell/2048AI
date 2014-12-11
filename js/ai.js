@@ -1,12 +1,13 @@
 function AI(grid) {
   this.grid = grid;
-  this.times = [];
+  this.avgTime = 0.0;
+  this.numMoves = 0;
 }
 
 // static evaluation function
 AI.prototype.eval = function() {
   // take into account the number of empty cells
-  var emptyCells = (Math.max(.1, this.grid.availableCells().length))<<2;
+  var emptyCells = (Math.max(1, this.grid.availableCells().length))<<2;
   // take into account the similarity of the tiles on
   // the board
   var boardSim = (Math.max(.1, this.grid.boardSimilarityScore()))<<1;
@@ -179,15 +180,30 @@ AI.prototype.greedyScore = function (depth, carryOver) {
 //
 // Expectimax algorithm
 //
-AI.prototype.expectimax = function (depth, alpha) {
+AI.prototype.expectiminimax = function (depth) {
   if (this.grid.playerTurn) {
+    var move = -1;
+    var score = 0;
     // It's the AI's turn to play (max)
-    if (depth <= 0) {
-      // Don't go any deeper, just run the heuristic
-      return {
-        score: this.eval()
+    if (depth == 0) {
+      for (var direction in [0,1,2,3]) {
+        var newGrid = this.grid.clone();
+        var gridMove = newGrid.move(direction)
+        if (gridMove.moved) { // Move was successful
+          var newAI = new AI(newGrid);
+          var newScore = newAI.eval();
+          if (newScore > score){
+            score = newScore;
+            move = direction;
+          }
+        }
       }
-    } else {
+      return {
+        score: score,
+        move: move
+      }
+    }
+    else {
       var move = -1;
       var score = 0;
       // Loop through the allowed moves (up, down, left right)
@@ -205,6 +221,7 @@ AI.prototype.expectimax = function (depth, alpha) {
           // then running the expectimax algo on it
           var newAI = new AI(newGrid);
           var newScore = newAI.expectimax(depth - 1, alpha).score; 
+          var newScore = newAI.expectiminimax(depth - 1).score; 
           // If the new score is greater than the previous one, update the
           // score and direction required to get that score
           if (newScore > score) {
@@ -246,6 +263,7 @@ AI.prototype.expectimax = function (depth, alpha) {
 
         // Calculate the value of this board
         var newScore = this.expectimax(depth, alpha).score;
+        var newScore = this.expectiminimax(depth).score;
         // The value to add to the total score is the probability that the value
         // is chosen (prob of 2 or prob of 4) multiplied by the probability that
         // that cell is chosen (each cell has equal probability) times the score
@@ -264,10 +282,25 @@ AI.prototype.expectimax = function (depth, alpha) {
 AI.prototype.minimax = function(depth, alpha, beta) {
   var bestMove = -1;
   if (this.grid.playerTurn) {
-    
     //Base Case
-    if (depth == 0) {return {score: this.eval()}}
-
+    if (depth == 0) {
+      for (var direction in [0,1,2,3]) {
+        var newGrid = this.grid.clone();
+        var gridMove = newGrid.move(direction)
+        if (gridMove.moved) { // Move was successful
+          var newAI = new AI(newGrid);
+          var newScore = newAI.eval();
+          if (newScore > alpha){
+            alpha = newScore;
+            bestMove = direction;
+          }
+        }
+      }
+      return {
+        score: alpha,
+        move: bestMove
+      }
+    }
     //Recursive Case
     else {
       for (var direction in [0, 1, 2, 3]) {
@@ -305,9 +338,9 @@ AI.prototype.minimax = function(depth, alpha, beta) {
     var cells = this.grid.availableCells()
     for (i in cells) {
       var cell = cells[i];
-
-      for (var newTileNumber in [2, 4]) {
-        var tile = new Tile(cell, parseInt(newTileNumber, 10));
+      var valTiles = [2,4];
+      for (var newTileNumber in valTiles) {
+        var tile = new Tile(cell, parseInt(valTiles[newTileNumber], 10));
         this.grid.insertTile(tile);
         //Evaluate this new board
         var newScore = this.minimax(depth, alpha, beta).score;
@@ -391,6 +424,11 @@ AI.prototype.dls = function(depth, alpha, beta) {
   }
 }
 
+AI.prototype.calcAvg = function (newTime) {
+  var oldSum = this.avgTime*(this.numMoves - 1);
+  this.avgTime = (oldSum + newTime)/this.numMoves;
+}
+
 // performs an expectimax search and returns the best move
 AI.prototype.getBestExpectimax = function() {
   var d = 3;
@@ -422,10 +460,10 @@ AI.prototype.getBestMinimax = function() {
       best = this.minimax(d, -10000, 10000)
       d--;
     }
-    this.times.push((new Date()).getTime() - start);
+    this.calcAvg((new Date()).getTime() - start);
     return best;
   }
-  this.times.push((new Date()).getTime() - start);
+  this.calcAvg((new Date()).getTime() - start);
   return best;
 }
 

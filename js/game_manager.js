@@ -70,12 +70,18 @@ GameManager.prototype.move = function(direction) {
       this.grid.computerMove();
   } else {
     this.won = true;
+    console.log("game over");
+    console.log("Max tile: "+this.grid.max());
+    console.log("Score: "+this.score);
   }
 
   //console.log(this.grid.valueSum());
 
   if (!this.grid.movesAvailable()) {
     this.over = true; // Game over!
+    console.log("game over");
+    console.log("Max tile: "+this.grid.max());
+    console.log("Score: "+this.score);
   }
 
   this.actuate();

@@ -1,3 +1,29 @@
+/* Pre-allocate weighted boards
+to save memory.*/
+
+  var boardSetups = [
+  [[3,2,1,0],
+   [2,1,0,-1],
+   [1,0,-1,-1],
+   [0,-1,-1,-2]
+  ],
+  [[0,1,2,3],
+   [-1,0,1,2], 
+   [-1,-1,0,1],
+   [-2,-1,-1,0]
+  ],
+  [[-2,-1,-1,0],
+   [-1,-1,0,1],
+   [-1,0,1,2],
+   [0,1,2,3]
+  ],
+  [[0,-1,-1,-2],
+   [1,0,-1,-1],
+   [2,1,0,-1],
+   [3,2,1,0]
+  ]
+]
+
 function Grid(size) {
   this.size = size;
   this.startTiles   = 2;
@@ -6,6 +32,23 @@ function Grid(size) {
 
   this.build();
   this.playerTurn = true;
+}
+
+function fastLog(n){
+  var counter = 0;
+  var inverse = false;
+  if (n < 1) {
+    n = n*-1;
+    inverse = true;
+  }
+  while (n>1) {
+    n = n >> 1;
+    counter ++;
+  }
+  if (counter == 0) {
+    return 1;
+  }
+  return inverse ? 1/intToFloat(counter) : counter;
 }
 
 Grid.prototype.probabilityOfNewTile = function (value) {
@@ -209,29 +252,16 @@ Grid.prototype.move = function (direction) {
             won = true;
           }
         } else {
-          //if (debug) {
-            //console.log(cell);
-            //console.log(tile);
-          //}
           self.moveTile(tile, positions.farthest);
         }
 
         if (!self.positionsEqual(cell, tile)) {
           self.playerTurn = false;
-          //console.log('setting player turn to ', self.playerTurn);
           moved = true; // The tile moved from its original cell!
         }
       }
     });
   });
-
-  //console.log('returning, playerturn is', self.playerTurn);
-  //if (!moved) {
-    //console.log('cell', cell);
-    //console.log('tile', tile);
-    //console.log('direction', direction);
-    //console.log(this.toString());
-  //}
   return {moved: moved, score: score, won: won};
 };
 
@@ -276,34 +306,6 @@ Grid.prototype.movesAvailable = function () {
   return this.cellsAvailable() || this.tileMatchesAvailable();
 };
 
-// Check for available matches between tiles (more expensive check)
-// returns the number of matches
-Grid.prototype.tileMatchesAvailable = function () {
-  var self = this;
-
-  var tile;
-
-  for (var x = 0; x < this.size; x++) {
-    for (var y = 0; y < this.size; y++) {
-      tile = this.cellContent({ x: x, y: y });
-
-      if (tile) {
-        for (var direction = 0; direction < 4; direction++) {
-          var vector = self.getVector(direction);
-          var cell   = { x: x + vector.x, y: y + vector.y };
-
-          var other  = self.cellContent(cell);
-
-          if (other && other.value === tile.value) {
-            return true; //matches++; // These two tiles can be merged
-          }
-        }
-      }
-    }
-  }
-  return false; 
-};
-
 Grid.prototype.positionsEqual = function (first, second) {
   return first.x === second.x && first.y === second.y;
 };
@@ -323,23 +325,44 @@ Grid.prototype.toString = function() {
   return string;
 }
 
-Grid.prototype.maxAndSum = function() {
+Grid.prototype.safeCellContent = function (cell) {
+  var result = this.cellContent(cell)
+  if (result == null) {
+    return 0;
+  }
+  return result.value;
+}
+
+Grid.prototype.weightedBoardScore = function () {  
+  var sums = [0,0,0,0]
+  for (var x=0; x<4; x++) {
+    for (var y=0; y<4; y++) {
+      var currBlockVal = this.safeCellContent(this.indexes[x][y])
+      for (var i=0; i<4; i++){
+        sums[i] += boardSetups[i][x][y]*currBlockVal;
+      }
+    }
+  }
+  return fastLog(Math.max.apply(Math, sums));
+}
+
+Grid.prototype.max = function() {
   var max = 0;
-  var sum = 0;
-  var retArray = []
+  var posX = 0;
+  var posY = 0;
   for (var x=0; x<4; x++) {
     for (var y=0; y<4; y++) {
       if (this.cellOccupied(this.indexes[x][y])) {
         var value = this.cellContent(this.indexes[x][y]).value;
         if (value > max) {
           max = value;
+          posX = x;
+          posY = y;
         }
-        sum += value;
       }
     }
   }
-  retArray.push((Math.log(max) / Math.log(2)), Math.log(sum))
-  return retArray;
+  return max;
 }
 
 // Compute the similarity of each tile on the board
@@ -351,45 +374,84 @@ Grid.prototype.maxAndSum = function() {
 // to be high, and vice versa.
 Grid.prototype.boardSimilarityScore = function () {
   var sim = 0
+  var blockSim;
+  var currBlockVal;
+  var thisBlockVal;
   for (var x=0; x<4; x++){
     for (var y=0; y<4; y++){
       if (this.cellOccupied(this.indexes[x][y])) {
-        var blockSim = 0;
-        var currBlockVal = this.cellContent(this.indexes[x][y]).value;
+        blockSim = 0;
+        currBlockVal = this.safeCellContent(this.indexes[x][y]);
         // check if any of the 4 blocks availabe in one move
         // are the same as this block
-        if (this.withinBounds({x:x-1, y:y}) &&
-            currBlockVal == this.cellContent(this.indexes[x-1][y])) {
-          blockSim += 1;
+        if (this.withinBounds({x:x-1, y:y})){
+          thisblockVal = this.safeCellContent(this.indexes[x-1][y]);
+          if (currBlockVal == thisBlockVal) {
+            blockSim += 0.5;
+          }
+          else {
+            currLog = fastLog(currBlockVal);
+            thisLog = fastLog(thisBlockVal);
+            diff = Math.abs(currLog - thisLog);
+            if (diff <= 2) {
+              blockSim += 1;
+            }
+            else blockSim -= (.5*diff);
+          }
         }
-        if (this.withinBounds({x:x-1, y:y-1}) &&
-            currBlockVal == this.cellContent(this.indexes[x-1][y-1])) {
-          blockSim += 1;
+        if (this.withinBounds({x:x, y:y-1})){
+          thisblockVal = this.safeCellContent(this.indexes[x][y-1]);
+          if (currBlockVal == thisBlockVal) {
+            blockSim += 0.5;
+          }
+          else {
+            currLog = fastLog(currBlockVal);
+            thisLog = fastLog(thisBlockVal);
+            diff = Math.abs(currLog - thisLog);
+            if (diff <= 2) {
+              blockSim += 1;
+            }
+            else blockSim -= (.5*diff);
+          }
         }
-        if (this.withinBounds({x:x+1, y:y}) &&
-            currBlockVal == this.cellContent(this.indexes[x+1][y])) {
-          blockSim += 1;
+        if (this.withinBounds({x:x+1, y:y})){
+          thisblockVal = this.safeCellContent(this.indexes[x+1][y]);
+          if (currBlockVal == thisBlockVal) {
+            blockSim += 0.5;
+          }
+          else {
+            currLog = fastLog(currBlockVal);
+            thisLog = fastLog(thisBlockVal);
+            diff = Math.abs(currLog - thisLog);
+            if (diff <= 2) {
+              blockSim += 1;
+            }
+            else blockSim -= (.5*diff);
+          }
         }
-        if (this.withinBounds({x:x+1, y:y+1}) &&
-            currBlockVal == this.cellContent(this.indexes[x+1][y+1])) {
-          blockSim += 1;
+        if (this.withinBounds({x:x, y:y+1})) {
+          thisblockVal = this.safeCellContent(this.indexes[x][y+1]);
+          if (currBlockVal == thisBlockVal) {
+            blockSim += 0.5;
+          }
+          else {
+            currLog = fastLog(currBlockVal);
+            thisLog = fastLog(thisBlockVal);
+            diff = Math.abs(currLog - thisLog);
+            if (diff <= 2) {
+              blockSim += 1;
+            }
+            else blockSim -= (.5*diff);
+          }
         }
         // weight the block similarity by the log base 2 value of
         // the block, since similar blocks of greater value are more
         // valuable.
-        sim += (blockSim * (Math.log(currBlockVal) / Math.log(2)));
+        sim += (blockSim)// * fastLog(currBlockVal));
       }
     }
   }
-  return sim;
-}
-
-Grid.prototype.safeCellContent = function (cell) {
-  var result = this.cellContent(cell)
-  if (result == null) {
-    return 0;
-  }
-  return result.value;
+  return fastLog(sim);
 }
 
 // calculate how "monotonic" the board is -- it's best if the board
@@ -437,6 +499,50 @@ Grid.prototype.monotoneBoardScore = function () {
       // some order in the column, and see if the rest of the
       // columns on the board match this trend.
       trendSum += .25;
+      expectedTrend = currentTrend;
+    }
+    else {
+      // there's no order in the column. Set expecteTrend to 0 so that
+      // we can find a trend in the next column if it exists.
+      expectedTrend = 0;
+    }
+  }
+  expectedTrend = 0; // restart
+  for (var y = 0; y < 4; y++){
+    lastVal = this.safeCellContent(this.indexes[0][y]);
+    thisVal = 0;
+    for (var x = 1; x < 4; x++) {
+      thisVal = this.safeCellContent(this.indexes[x][y]);
+      if (lastVal > thisVal && currentTrend <= 0) {
+        currentTrend = -1;
+      }
+      else if (lastVal == thisVal) {
+        currentTrend = 0;
+      }
+      else if (lastVal < thisVal && currentTrend >= 0
+               && currentTrend < 2) {
+        currentTrend = 1;
+      }
+      else {
+        // the column is not following a trend of increasing or
+        // decreasing. Set currentTrend to 100 to indicate that
+        // this column isn't monotonic
+        currentTrend = 100;
+      }
+      lastVal = thisVal;
+    }
+    if (expectedTrend == currentTrend || (expectedTrend == 0
+              && currentTrend != 100) || currentTrend == 0) {
+      trendSum += 1;
+      // set the expectedTrend of the next column accordingly
+      expectedTrend = currentTrend;
+    }
+    else if (expectedTrend != currentTrend && currentTrend != 100) {
+      // this column didn't follow the expected trend, but has some
+      // sort of trend going. Add .25 to the trendSum to indicate
+      // some order in the column, and see if the rest of the
+      // columns on the board match this trend.
+      trendSum += 0.25;
       expectedTrend = currentTrend;
     }
     else {

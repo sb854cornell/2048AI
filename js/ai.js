@@ -352,4 +352,3 @@ AI.prototype.translate = function(move) {
     3: 'left'
   }[move];
 }
-

@@ -75,7 +75,6 @@ Grid.prototype.build = function () {
   }
 };
 
-
 // Find the first available random position
 Grid.prototype.randomAvailableCell = function () {
   var cells = this.availableCells();
@@ -124,6 +123,34 @@ Grid.prototype.cellContent = function (cell) {
   } else {
     return null;
   }
+};
+
+// Check for available matches between tiles (more expensive check)
+// returns the number of matches
+Grid.prototype.tileMatchesAvailable = function () {
+  var self = this;
+
+  var tile;
+
+  for (var x = 0; x < this.size; x++) {
+    for (var y = 0; y < this.size; y++) {
+      tile = this.cellContent({ x: x, y: y });
+
+      if (tile) {
+        for (var direction = 0; direction < 4; direction++) {
+          var vector = self.getVector(direction);
+          var cell   = { x: x + vector.x, y: y + vector.y };
+
+          var other  = self.cellContent(cell);
+
+          if (other && other.value === tile.value) {
+            return true; //matches++; // These two tiles can be merged
+          }
+        }
+      }
+    }
+  }
+  return false; 
 };
 
 // Inserts a tile at its position

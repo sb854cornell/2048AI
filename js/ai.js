@@ -10,13 +10,13 @@ AI.prototype.eval = function() {
   var emptyCells = (Math.max(1, this.grid.availableCells().length))<<2;
   // take into account the similarity of the tiles on
   // the board
-  var boardSim = (Math.max(.1, this.grid.boardSimilarityScore()))<<1;
+  var boardSim = (Math.max(1, this.grid.boardSimilarityScore()))<<1;
   // take into account the monotonicity of the
   // board
-  var monotoneScore = Math.max(.1, this.grid.monotoneBoardScore())<<1;
+  var monotoneScore = Math.max(1, this.grid.monotoneBoardScore())<<1;
   // take into account the positions of each tile on the board -
   // ensure that the tiles are grouped in some sensible manner.
-  var weightedScore = Math.max(.1, this.grid.weightedBoardScore())  
+  var weightedScore = Math.max(1, this.grid.weightedBoardScore())  
   return emptyCells*boardSim*weightedScore*monotoneScore;
 };
 
@@ -186,21 +186,21 @@ AI.prototype.expectiminimax = function (depth) {
     var score = 0;
     // It's the AI's turn to play (max)
     if (depth == 0) {
-      for (var direction in [0,1,2,3]) {
-        var newGrid = this.grid.clone();
-        var gridMove = newGrid.move(direction)
-        if (gridMove.moved) { // Move was successful
-          var newAI = new AI(newGrid);
-          var newScore = newAI.eval();
-          if (newScore > score){
-            score = newScore;
-            move = direction;
-          }
-        }
-      }
+    //  for (var direction in [0,1,2,3]) {
+    //    var newGrid = this.grid.clone();
+    //    var gridMove = newGrid.move(direction)
+    //    if (gridMove.moved) { // Move was successful
+    //      var newAI = new AI(newGrid);
+    //      var newScore = newAI.eval();
+    //      if (newScore > score){
+    //        score = newScore;
+    //        move = direction;
+    //      }
+    //    }
+    //  }
       return {
-        score: score,
-        move: move
+        score: this.eval()//,
+        //move: move
       }
     }
     else {
@@ -220,10 +220,11 @@ AI.prototype.expectiminimax = function (depth) {
           // Check the value of the board by makinga new AI with that board and
           // then running the expectiminimax algo on it
           var newAI = new AI(newGrid);
-          var newScore = newAI.expectiminimax(depth - 1).score; 
+          var mergeScore = resMove.score >2 ? fastLog(mergeScore) : 1;
+          var newScore = newAI.expectiminimax(depth - 1).score * mergeScore; 
           // If the new score is greater than the previous one, update the
           // score and direction required to get that score
-          if (newScore > score) {
+          if (newScore >= score) {
             score = newScore;
             move = direction;
           }
@@ -282,21 +283,21 @@ AI.prototype.minimax = function(depth, alpha, beta) {
   if (this.grid.playerTurn) {
     //Base Case
     if (depth == 0) {
-      for (var direction in [0,1,2,3]) {
-        var newGrid = this.grid.clone();
-        var gridMove = newGrid.move(direction)
-        if (gridMove.moved) { // Move was successful
-          var newAI = new AI(newGrid);
-          var newScore = newAI.eval();
-          if (newScore > alpha){
-            alpha = newScore;
-            bestMove = direction;
-          }
-        }
-      }
+      //for (var direction in [0,1,2,3]) {
+      //  var newGrid = this.grid.clone();
+      //  var gridMove = newGrid.move(direction)
+      //  if (gridMove.moved) { // Move was successful
+      //    var newAI = new AI(newGrid);
+      //    var newScore = newAI.eval();
+      //    if (newScore > alpha){
+      //      alpha = newScore;
+      //      bestMove = direction;
+      //    }
+      //  }
+      //}
       return {
-        score: alpha,
-        move: bestMove
+        score: this.eval()//alpha,
+        //move: bestMove
       }
     }
     //Recursive Case
@@ -309,11 +310,12 @@ AI.prototype.minimax = function(depth, alpha, beta) {
 
           // Check the value of the next-depth board 
           var newAI = new AI(newGrid);
+          var mergeScore = gridMove.score >= 2? fastLog(gridMove.score) : 1;
           var newScore = newAI.minimax(depth - 1, alpha, beta).score;
           //console.log("direction "+direction+" score "+newScore)
           // If the new score is greater than the previous one, update the
           // score and direction required to get that score
-          if (newScore > alpha) {
+          if (newScore >= alpha) {
             alpha = newScore;
             bestMove = direction;
           }

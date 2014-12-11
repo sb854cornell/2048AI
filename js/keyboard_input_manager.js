@@ -13,6 +13,7 @@ KeyboardInputManager.prototype.on = function (event, callback) {
 
 KeyboardInputManager.prototype.emit = function (event, data) {
   var callbacks = this.events[event];
+  console.log(this.events);
   if (callbacks) {
     callbacks.forEach(function (callback) {
       callback(data);
@@ -54,19 +55,35 @@ KeyboardInputManager.prototype.listen = function () {
   var retry = document.getElementsByClassName("retry-button")[0];
   retry.addEventListener("click", this.restart.bind(this));
 
-  var hintButton = document.getElementById('hint-button');
-  hintButton.addEventListener('click', function(e) {
+  var runEMButton = document.getElementById('run-em-button');
+  runEMButton.addEventListener('click', function(e) {
     e.preventDefault();
-    var feedbackContainer  = document.getElementById('feedback-container');
-    feedbackContainer.innerHTML = '<img src=img/spinner.gif />';
-    self.emit('think');
+    self.emit('run-em');
   });
 
-  var runButton = document.getElementById('run-button');
-  runButton.addEventListener('click', function(e) {
+  var runMMButton = document.getElementById('run-mm-button');
+  runMMButton.addEventListener('click', function(e) {
     e.preventDefault();
-    self.emit('run')
-  })
+    self.emit('run-mm');
+  });
+
+  var runIDDFSButton = document.getElementById('run-iddfs-button');
+  runIDDFSButton.addEventListener('click', function(e) {
+    e.preventDefault();
+    self.emit('run-iddfs');
+  });
+
+  var runRButton = document.getElementById('run-r-button');
+  runRButton.addEventListener('click', function(e) {
+    e.preventDefault();
+    self.emit('run-r');
+  });
+
+  var runPRButton = document.getElementById('run-pr-button');
+  runPRButton.addEventListener('click', function(e) {
+    e.preventDefault();
+    self.emit('run-pr');
+  });
 };
 
 KeyboardInputManager.prototype.restart = function (event) {

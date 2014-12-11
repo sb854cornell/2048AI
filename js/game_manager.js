@@ -72,6 +72,7 @@ GameManager.prototype.move = function(direction) {
     this.won = true;
     console.log("game over");
     console.log("Max tile: "+this.grid.max());
+    console.log("Avg time per move: "+this.ai.avgTime);
     console.log("Score: "+this.score);
   }
 
@@ -81,9 +82,9 @@ GameManager.prototype.move = function(direction) {
     this.over = true; // Game over!
     console.log("game over");
     console.log("Max tile: "+this.grid.max());
+    console.log("Avg time per move: "+this.ai.avgTime);
     console.log("Score: "+this.score);
   }
-
   this.actuate();
 }
 

@@ -186,7 +186,7 @@ GameManager.prototype.move = function(direction) {
     console.log("new game");
     this.restart();
     numGames ++;
-    if (numGames < 30) {
+    if (numGames < 10) {
       this.running = true;
       this.run(this.whichAI);
     }

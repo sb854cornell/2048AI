@@ -184,14 +184,14 @@ GameManager.prototype.move = function(direction) {
     console.log("Number of moves: "+this.ai.numMoves);
     console.log("Score: "+this.score);
     console.log("new game");
-    this.restart();
-    numGames ++;
-    if (numGames < 10) {
-      this.running = true;
-      this.run(this.whichAI);
-    }
+    //this.restart();
+    //numGames ++;
+    //if (numGames < 10) {
+    //  this.running = true;
+    //  this.run(this.whichAI);
+    //}
   }
-  //this.actuate();
+  this.actuate();
 }
 
 // moves continuously until game is over
@@ -216,12 +216,12 @@ GameManager.prototype.run = function(which) {
   //best = this.ai.getBestExpectimax();
 
   this.move(best.move);
-  // var timeout = animationDelay;
+  var timeout = animationDelay;
   if (this.running && !this.over) {
-    this.run(this.whichAI);
-    // var self = this;
-    // this.moveAgainTimeout = setTimeout(function() {
-    //  self.run(self.whichAI);
-    // }, timeout);
+    //this.run(this.whichAI);
+    var self = this;
+    this.moveAgainTimeout = setTimeout(function() {
+      self.run(self.whichAI);
+     }, timeout);
   }
 }

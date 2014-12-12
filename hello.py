@@ -11,13 +11,13 @@ sums = [0,0,0,0,0,0]
 count = 0 
 
 if __name__ == "__main__":
-    with open('Text.txt', 'rU') as f:
+    with open('expectimax.txt', 'rU') as f:
         for line in f:
         	if "game over" in line:
     			count +=1
         	for i in range(len(STATS)):
         		if STATS[i] in line:
-    				number = float(line.rsplit(STATS[i])[1])
+    				number = float(line.rsplit(STATS[i])[1].split(" ")[0])
     				sums[i] += float(number)
     	print "count is " + str(count)
     	for i in range(len(STATS)):

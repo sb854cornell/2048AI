@@ -1,0 +1,189 @@
+Partially Random
+
+
+Max tile: 128
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 210
+Score: 1528
+
+Max tile: 32
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 102
+Score: 452
+
+Max tile: 128
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 157
+Score: 1084
+
+Max tile: 64
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 170
+Score: 780
+
+Max tile: 64
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 126
+Score: 780
+
+Max tile: 128
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 165
+Score: 1064
+
+Max tile: 128
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 194
+Score: 1480
+
+Max tile: 64
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 111
+Score: 628
+
+Max tile: 128
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 170
+Score: 1172
+
+Max tile: 64
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 174
+Score: 1180
+
+Max tile: 128
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 190
+Score: 1368
+
+Max tile: 64
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 152
+Score: 916
+
+Max tile: 128
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 244
+Score: 1752
+
+Max tile: 128
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 241
+Score: 1712
+
+Max tile: 128
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 222
+Score: 1596
+
+Max tile: 128
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 161
+Score: 1244
+
+Max tile: 64
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 166
+Score: 940
+
+Max tile: 128
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 131
+Score: 976
+
+Max tile: 32
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 105
+Score: 484
+
+Max tile: 32
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 91
+Score: 340
+
+Max tile: 256
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 261
+Score: 2160
+
+Max tile: 128
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 196
+Score: 1336
+
+Max tile: 128
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 239
+Score: 1588
+
+Max tile: 128
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 231
+Score: 1588
+
+Max tile: 64
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 110
+Score: 644
+
+Max tile: 64
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 146
+Score: 800
+
+Max tile: 64
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 133
+Score: 868
+
+Max tile: 256
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 365
+Score: 3064
+
+Max tile: 64
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 166
+Score: 976
+
+Max tile: 128
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 183
+Score: 1404
+
+Max tile: 64
+Avg time per move: 0
+Total Time for this run: 0
+Number of moves: 139
+Score: 884
+

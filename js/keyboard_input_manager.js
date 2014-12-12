@@ -66,10 +66,10 @@ KeyboardInputManager.prototype.listen = function () {
     self.emit('run-mm');
   });
 
-  var runIDDFSButton = document.getElementById('run-iddfs-button');
-  runIDDFSButton.addEventListener('click', function(e) {
+  var runDFSButton = document.getElementById('run-dfs-button');
+  runDFSButton.addEventListener('click', function(e) {
     e.preventDefault();
-    self.emit('run-iddfs');
+    self.emit('run-dfs');
   });
 
   var runRButton = document.getElementById('run-r-button');

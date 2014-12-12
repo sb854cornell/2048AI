@@ -471,8 +471,8 @@ AI.prototype.getBestMinimax = function() {
   return best;
 }
 
-// performs an IDDFS search and returns the best move
-AI.prototype.getBestIDDFS = function() {
+// performs a DFS search and returns the best move
+AI.prototype.getBestDFS = function() {
   var d = 3;
   this.numMoves++;
   var start = (new Date()).getTime();

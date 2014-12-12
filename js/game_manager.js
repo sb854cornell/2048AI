@@ -184,12 +184,12 @@ GameManager.prototype.move = function(direction) {
     console.log("Number of moves: "+this.ai.numMoves);
     console.log("Score: "+this.score);
     console.log("new game");
-    // this.restart();
-    // numGames ++;
-    // if (numGames <= 30) {
-    //   this.running = true;
-    //   this.run(this.whichAI);
-    // }
+    this.restart();
+    numGames ++;
+    if (numGames <= 30) {
+      this.running = true;
+      this.run(this.whichAI);
+    }
   }
   this.actuate();
 }

@@ -216,12 +216,12 @@ GameManager.prototype.run = function(which) {
   //best = this.ai.getBestExpectimax();
 
   this.move(best.move);
-  //var timeout = animationDelay;
+  // var timeout = animationDelay;
   if (this.running && !this.over) {
     this.run(this.whichAI);
-    //var self = this;
-    //this.moveAgainTimeout = setTimeout(function() {
+    // var self = this;
+    // this.moveAgainTimeout = setTimeout(function() {
     //  self.run(self.whichAI);
-    //}, timeout);
+    // }, timeout);
   }
 }

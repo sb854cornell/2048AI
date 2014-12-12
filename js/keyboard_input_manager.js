@@ -13,7 +13,6 @@ KeyboardInputManager.prototype.on = function (event, callback) {
 
 KeyboardInputManager.prototype.emit = function (event, data) {
   var callbacks = this.events[event];
-  console.log(this.events);
   if (callbacks) {
     callbacks.forEach(function (callback) {
       callback(data);

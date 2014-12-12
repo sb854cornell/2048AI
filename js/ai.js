@@ -362,8 +362,9 @@ AI.prototype.minimax = function(depth, alpha, beta) {
 Implements a recursive depth-limited depth first search. d is the depth limit
 Inv: depth >= 0
 *******************************************************************************/
-AI.prototype.dls = function(depth, alpha, beta) {
+AI.prototype.dls = function(depth) {
   var bestMove = -1;
+  var bestScore = 0;
   if (this.grid.playerTurn) {
     
     //Base Case
@@ -379,21 +380,18 @@ AI.prototype.dls = function(depth, alpha, beta) {
 
           // Check the value of the next-depth board 
           var newAI = new AI(newGrid);
-          var newScore = newAI.dls(depth - 1, alpha, beta).score;
+          var newScore = newAI.dls(depth - 1).score;
           //console.log("direction "+direction+" score "+newScore)
           // If the new score is greater than the previous one, update the
           // score and direction required to get that score
-          if (newScore > alpha) {
-            alpha = newScore;
+          if (newScore >= bestScore) {
+            bestScore = newScore;
             bestMove = direction;
-          }
-          if (beta <= alpha) {
-            break
           }
         }
       }
       return {
-        score: alpha,
+        score: bestScore,
         move: bestMove
       }
     }
@@ -406,22 +404,24 @@ AI.prototype.dls = function(depth, alpha, beta) {
     var cells = this.grid.availableCells()
     for (i in cells) {
       var cell = cells[i];
-
-      for (var newTileNumber in [2, 4]) {
-        var tile = new Tile(cell, parseInt(newTileNumber, 10));
+      var valTile;
+      if (cells.length <= 6) {
+        valTile = [2,4];
+      }
+      else valTile = [2];
+      // Tile to be inserted could be a 2 or a 4
+      for (var newTileNumber in valTile) {
+        var tile = new Tile(cell, parseInt(valTile[newTileNumber], 10));
         this.grid.insertTile(tile);
         //Evaluate this new board
-        var newScore = this.dls(depth, alpha, beta).score;
-        if (newScore < beta) {beta = newScore;}
+        var newScore = this.dls(depth).score;
+        if (newScore >= bestScore) {bestScore = newScore;}
         // Remove the cell so that everything is back to how it started
         this.grid.removeTile(cell);
-        if (beta <= alpha) {
-          break;
-        }
       }
     }
     
-    return {score: beta}
+    return {score: bestScore}
   }
 }
 
@@ -476,12 +476,12 @@ AI.prototype.getBestIDDFS = function() {
   var d = 3;
   this.numMoves++;
   var start = (new Date()).getTime();
-  var best = this.dls(d, -10000, 10000);
+  var best = this.dls(d);
 
   if (best.move == -1) {
     d--;
     while (d >=0 && best.move == -1) {
-      best = this.dls(d, -10000, 10000)
+      best = this.dls(d)
       d--;
     }
     this.calcAvg((new Date()).getTime() - start);

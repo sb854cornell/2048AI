@@ -181,9 +181,3 @@ Total Time for this run: 0
 Number of moves: 183
 Score: 1404
 
-Max tile: 64
-Avg time per move: 0
-Total Time for this run: 0
-Number of moves: 139
-Score: 884
-

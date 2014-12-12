@@ -5,6 +5,8 @@ AI for the game [2048](https://github.com/gabrielecirulli/2048).
 
 See it in action [here](http://sb854cornell.github.io/2048AI/).
 
+We developed this game based on the source code for [2048](https://github.com/gabrielecirulli/2048) and adapted existing [AI framework](https://github.com/ov3y/2048-AI) to develop our own artificial intelligence agents that could interact with the game. These agents use a board evaluation function to evaluate the desirability of a certain board configuration.
+
 You can try to run two random agents, an agent that uses DFS, Minimax (with alpha-beta pruning), or Expectiminimax.
 
 We found that Expectimax works the best!

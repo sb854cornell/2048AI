@@ -1,0 +1,219 @@
+index.html:13 The value "160dpi" for key "target-densitydpi" was truncated to its numeric prefix.
+index.html:13 The key "target-densitydpi" is not supported.
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 64
+game_manager.js:182 Avg time per move: 93.3130434782609
+game_manager.js:183 Total Time for this run: 10731
+game_manager.js:184 Number of moves: 115
+game_manager.js:185 Score: 940
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 64
+game_manager.js:182 Avg time per move: 187.53398058252426
+game_manager.js:183 Total Time for this run: 19316
+game_manager.js:184 Number of moves: 103
+game_manager.js:185 Score: 764
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 128
+game_manager.js:182 Avg time per move: 88.69662921348313
+game_manager.js:183 Total Time for this run: 15788
+game_manager.js:184 Number of moves: 178
+game_manager.js:185 Score: 1916
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 128
+game_manager.js:182 Avg time per move: 71.66071428571433
+game_manager.js:183 Total Time for this run: 12039
+game_manager.js:184 Number of moves: 168
+game_manager.js:185 Score: 1608
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 64
+game_manager.js:182 Avg time per move: 85.46666666666667
+game_manager.js:183 Total Time for this run: 8974
+game_manager.js:184 Number of moves: 105
+game_manager.js:185 Score: 776
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 32
+game_manager.js:182 Avg time per move: 74.20192307692312
+game_manager.js:183 Total Time for this run: 7717
+game_manager.js:184 Number of moves: 104
+game_manager.js:185 Score: 720
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 256
+game_manager.js:182 Avg time per move: 127.09235668789802
+game_manager.js:183 Total Time for this run: 39907
+game_manager.js:184 Number of moves: 314
+game_manager.js:185 Score: 3792
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 128
+game_manager.js:182 Avg time per move: 112.09356725146199
+game_manager.js:183 Total Time for this run: 19168
+game_manager.js:184 Number of moves: 171
+game_manager.js:185 Score: 1616
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 256
+game_manager.js:182 Avg time per move: 60.99227799227805
+game_manager.js:183 Total Time for this run: 15797
+game_manager.js:184 Number of moves: 259
+game_manager.js:185 Score: 3060
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 128
+game_manager.js:182 Avg time per move: 65.64999999999998
+game_manager.js:183 Total Time for this run: 9191
+game_manager.js:184 Number of moves: 140
+game_manager.js:185 Score: 1300
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 64
+game_manager.js:182 Avg time per move: 112.98095238095242
+game_manager.js:183 Total Time for this run: 11863
+game_manager.js:184 Number of moves: 105
+game_manager.js:185 Score: 772
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 128
+game_manager.js:182 Avg time per move: 104.96319018404905
+game_manager.js:183 Total Time for this run: 17109
+game_manager.js:184 Number of moves: 163
+game_manager.js:185 Score: 1640
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 64
+game_manager.js:182 Avg time per move: 111.03759398496248
+game_manager.js:183 Total Time for this run: 14768
+game_manager.js:184 Number of moves: 133
+game_manager.js:185 Score: 1076
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 128
+game_manager.js:182 Avg time per move: 104.26666666666662
+game_manager.js:183 Total Time for this run: 17204
+game_manager.js:184 Number of moves: 165
+game_manager.js:185 Score: 1592
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 256
+game_manager.js:182 Avg time per move: 151.33771929824562
+game_manager.js:183 Total Time for this run: 34505
+game_manager.js:184 Number of moves: 228
+game_manager.js:185 Score: 2628
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 128
+game_manager.js:182 Avg time per move: 59.049999999999976
+game_manager.js:183 Total Time for this run: 9448
+game_manager.js:184 Number of moves: 160
+game_manager.js:185 Score: 1568
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 64
+game_manager.js:182 Avg time per move: 117.37634408602143
+game_manager.js:183 Total Time for this run: 10916
+game_manager.js:184 Number of moves: 93
+game_manager.js:185 Score: 700
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 128
+game_manager.js:182 Avg time per move: 56.73239436619718
+game_manager.js:183 Total Time for this run: 8056
+game_manager.js:184 Number of moves: 142
+game_manager.js:185 Score: 1384
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 64
+game_manager.js:182 Avg time per move: 82.24999999999994
+game_manager.js:183 Total Time for this run: 7567
+game_manager.js:184 Number of moves: 92
+game_manager.js:185 Score: 692
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 128
+game_manager.js:182 Avg time per move: 91.22485207100588
+game_manager.js:183 Total Time for this run: 15417
+game_manager.js:184 Number of moves: 169
+game_manager.js:185 Score: 1668
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 64
+game_manager.js:182 Avg time per move: 117.36134453781513
+game_manager.js:183 Total Time for this run: 13966
+game_manager.js:184 Number of moves: 119
+game_manager.js:185 Score: 996
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 256
+game_manager.js:182 Avg time per move: 114.50865051903114
+game_manager.js:183 Total Time for this run: 33093
+game_manager.js:184 Number of moves: 289
+game_manager.js:185 Score: 3560
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 128
+game_manager.js:182 Avg time per move: 115.02127659574458
+game_manager.js:183 Total Time for this run: 16218
+game_manager.js:184 Number of moves: 141
+game_manager.js:185 Score: 1308
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 256
+game_manager.js:182 Avg time per move: 111.60666666666667
+game_manager.js:183 Total Time for this run: 33482
+game_manager.js:184 Number of moves: 300
+game_manager.js:185 Score: 3552
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 1024
+game_manager.js:182 Avg time per move: 80.74638844301764
+game_manager.js:183 Total Time for this run: 50305
+game_manager.js:184 Number of moves: 623
+game_manager.js:185 Score: 10608
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 32
+game_manager.js:182 Avg time per move: 146.37974683544303
+game_manager.js:183 Total Time for this run: 11564
+game_manager.js:184 Number of moves: 79
+game_manager.js:185 Score: 484
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 64
+game_manager.js:182 Avg time per move: 126.4653465346535
+game_manager.js:183 Total Time for this run: 12773
+game_manager.js:184 Number of moves: 101
+game_manager.js:185 Score: 784
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 128
+game_manager.js:182 Avg time per move: 93.74545454545452
+game_manager.js:183 Total Time for this run: 15468
+game_manager.js:184 Number of moves: 165
+game_manager.js:185 Score: 1652
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 128
+game_manager.js:182 Avg time per move: 131.9378531073446
+game_manager.js:183 Total Time for this run: 23353
+game_manager.js:184 Number of moves: 177
+game_manager.js:185 Score: 1872
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 64
+game_manager.js:182 Avg time per move: 111.42857142857137
+game_manager.js:183 Total Time for this run: 12480
+game_manager.js:184 Number of moves: 112
+game_manager.js:185 Score: 884
+game_manager.js:186 new game
+game_manager.js:180 game over
+game_manager.js:181 Max tile: 64
+game_manager.js:182 Avg time per move: 77.55555555555556
+game_manager.js:183 Total Time for this run: 9074
+game_manager.js:184 Number of moves: 117
+game_manager.js:185 Score: 960
+game_manager.js:186 new game

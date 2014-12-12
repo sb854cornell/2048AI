@@ -60,8 +60,8 @@ function GameManager(size, InputManager, Actuator) {
     }
   }.bind(this));
 
-  this.inputManager.on('run-iddfs', function() {
-    if (this.running && this.whichAI === 'run-iddfs') {
+  this.inputManager.on('run-dfs', function() {
+    if (this.running && this.whichAI === 'run-dfs') {
       // This AI is running
       window.clearTimeout(this.moveAgainTimeout);
       this.running = false;
@@ -70,14 +70,14 @@ function GameManager(size, InputManager, Actuator) {
       // A different AI is running
       window.clearTimeout(this.moveAgainTimeout);
       this.running = true;
-      this.whichAI = 'run-iddfs';
-      this.run('run-iddfs');
+      this.whichAI = 'run-dfs';
+      this.run('run-dfs');
 
     } else {
       // Nothing is running
       this.running = true;
-      this.whichAI = 'run-iddfs';
-      this.run('run-iddfs');
+      this.whichAI = 'run-dfs';
+      this.run('run-dfs');
     }
   }.bind(this));
 
@@ -204,8 +204,8 @@ GameManager.prototype.run = function(which) {
    } else if (which === 'run-mm') {
      best = this.ai.getBestMinimax();
 
-   } else if (which === 'run-iddfs') {
-     best = this.ai.getBestIDDFS();
+   } else if (which === 'run-dfs') {
+     best = this.ai.getBestDFS();
 
    } else if (which === 'run-r') {
      best = this.ai.getRandom();

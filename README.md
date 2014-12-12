@@ -3,9 +3,9 @@
 AI for the game [2048](https://github.com/gabrielecirulli/2048).
 
 
-See it in action [here](http://sb854cornell.github.io/2048AI/). (Hit the auto-run button to let the AI attempt to solve it by itself)
+See it in action [here](http://sb854cornell.github.io/2048AI/).
 
-You can try to run two random agents, an agent that uses DFS, Minimax (with alpha-beta pruning), and Expectiminimax.
+You can try to run two random agents, an agent that uses DFS, Minimax (with alpha-beta pruning), or Expectiminimax.
 
 We found that Expectimax works the best!
 

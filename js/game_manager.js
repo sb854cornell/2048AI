@@ -191,7 +191,7 @@ GameManager.prototype.move = function(direction) {
       this.run(this.whichAI);
     }
   }
-  this.actuate();
+  //this.actuate();
 }
 
 // moves continuously until game is over

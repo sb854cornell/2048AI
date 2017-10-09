@@ -7,7 +7,7 @@ Shiwani Bisht (sb854)
 Ajay Gandhi (aag255)
 David Vakili (dv227)
 
-See it in action [here](http://sb854cornell.github.io/2048AI/).
+See it in action [here](https://shiwanibisht.github.io/2048AI/).
 
 We developed this game based on the source code for [2048](https://github.com/gabrielecirulli/2048) and adapted existing [AI framework](https://github.com/ov3y/2048-AI) to develop our own artificial intelligence agents that could interact with the game. These agents use a board evaluation function that we developed to evaluate the desirability of a certain board configuration.
 
